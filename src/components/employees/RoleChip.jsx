@@ -4,7 +4,7 @@ import Chip from '@mui/material/Chip';
 import { ROLE_COLORS, ROLE_LABELS } from '../../constants';
 
 /**
- * RoleChip – compact role badge using design-system colors
+ * RoleChip – compact pill-shaped role badge using pastel colors
  * Props:
  *   role: 'TT' | 'CT' | 'CN' | 'NV'
  */
@@ -19,12 +19,14 @@ const RoleChip = memo(function RoleChip({ role = 'CN' }) {
       title={ROLE_LABELS[role] ?? role}
       sx={{
         height: 20,
-        fontSize: '0.6875rem',
-        fontWeight: 700,
+        fontSize: '0.6875rem', // 11px
+        fontWeight: 600,
         letterSpacing: '0.02em',
-        borderRadius: '5px',
+        borderRadius: '10px', // pill shape
         backgroundColor: colors.bg,
         color: colors.color,
+        border: '1px solid',
+        borderColor: 'rgba(0,0,0,0.04)',
         '& .MuiChip-label': { px: '6px' },
       }}
     />

@@ -37,7 +37,7 @@ const EmployeeListSection = memo(function EmployeeListSection({
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
       {/* Section label */}
-      <Box sx={{ px: 2.5, pt: 2 }}>
+      <Box sx={{ px: 2.5, pt: 2, pb: 1 }}>
         <Typography
           variant="overline"
           sx={{
@@ -59,31 +59,54 @@ const EmployeeListSection = memo(function EmployeeListSection({
         sx={{
           minHeight: 40,
           px: 1,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
           '& .MuiTabs-indicator': { height: 2, borderRadius: 1 },
         }}
       >
         <Tab
           value="list"
           label="Chọn NV"
-          icon={<PeopleRoundedIcon sx={{ fontSize: 16 }} />}
+          icon={<PeopleRoundedIcon sx={{ fontSize: '1rem' }} />}
           iconPosition="start"
-          sx={{ minHeight: 40, fontSize: '0.8rem', gap: 0.5 }}
+          sx={{
+            minHeight: 40,
+            fontSize: '0.75rem',
+            gap: 0.5,
+            whiteSpace: 'nowrap',
+            p: 1,
+            minWidth: 0,
+          }}
           aria-label="Tab chọn nhân viên"
         />
         <Tab
           value="manage"
           label="Quản lý"
-          icon={<ManageAccountsRoundedIcon sx={{ fontSize: 16 }} />}
+          icon={<ManageAccountsRoundedIcon sx={{ fontSize: '1rem' }} />}
           iconPosition="start"
-          sx={{ minHeight: 40, fontSize: '0.8rem', gap: 0.5 }}
+          sx={{
+            minHeight: 40,
+            fontSize: '0.75rem',
+            gap: 0.5,
+            whiteSpace: 'nowrap',
+            p: 1,
+            minWidth: 0,
+          }}
           aria-label="Tab quản lý nhân viên"
         />
         <Tab
           value="history"
           label="Lịch sử"
-          icon={<HistoryRoundedIcon sx={{ fontSize: 16 }} />}
+          icon={<HistoryRoundedIcon sx={{ fontSize: '1rem' }} />}
           iconPosition="start"
-          sx={{ minHeight: 40, fontSize: '0.8rem', gap: 0.5 }}
+          sx={{
+            minHeight: 40,
+            fontSize: '0.75rem',
+            gap: 0.5,
+            whiteSpace: 'nowrap',
+            p: 1,
+            minWidth: 0,
+          }}
           aria-label="Tab lịch sử"
         />
       </Tabs>

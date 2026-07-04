@@ -1,27 +1,20 @@
 /* ============================================================
    index.css  –  ONLY print styles + Excel document sheet styles
-   All UI chrome is now handled by MUI components
+   All UI chrome is handled by MUI theme / components
    ============================================================ */
 
-/* ---------- Custom Scrollbar (global) ---------- */
-* {
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: #D1D5DB transparent;
-}
-*::-webkit-scrollbar { width: 6px; height: 6px; }
-*::-webkit-scrollbar-thumb {
-  background-color: #D1D5DB;
-  border-radius: 6px;
-}
-*::-webkit-scrollbar-thumb:hover { background-color: #9CA3AF; }
+/* ---------- Box sizing reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
 
 /* ---------- Excel Sheet Replica ---------- */
 .sheet-wrap {
-  background: #fff;
-  box-shadow: 0 4px 24px rgba(0,0,0,.18);
-  border: 1px solid #aaa;
-  width: 100%;
+  width: 794px; /* A4 strict width */
+  height: 1123px; /* A4 strict height */
+  background-color: #fff;
+  color: #000;
+  font-family: 'Times New Roman', Times, serif;
+  display: flex;
+  flex-direction: column;
 }
 
 .xl-table {
@@ -228,6 +221,7 @@
     box-shadow: none !important;
     border: none !important;
     width: 100% !important;
+    height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
   }

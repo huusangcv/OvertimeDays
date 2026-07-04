@@ -5,23 +5,17 @@ import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
-import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { LOGO_B64 } from '../../constants';
 
 /**
- * TopBar – 64px application header bar
+ * TopBar – 64px premium application header
+ * Single Source of Truth: Only generic app info and the main Action (In biểu)
  * Props:
- *   onPrint    : () => void
- *   onReset    : () => void
- *   selectedCount: number
+ *   onPrint: () => void
  */
-const TopBar = memo(function TopBar({ onPrint, onReset, selectedCount }) {
+const TopBar = memo(function TopBar({ onPrint }) {
   return (
     <AppBar
       component="header"
@@ -34,7 +28,8 @@ const TopBar = memo(function TopBar({ onPrint, onReset, selectedCount }) {
         borderColor: 'divider',
         color: 'text.primary',
         height: 64,
-        zIndex: 10,
+        zIndex: 100,
+        backgroundImage: 'none',
       }}
     >
       <Toolbar
@@ -42,100 +37,88 @@ const TopBar = memo(function TopBar({ onPrint, onReset, selectedCount }) {
           height: 64,
           minHeight: '64px !important',
           px: { xs: 2, sm: 3 },
-          gap: 1.5,
+          gap: 1,
         }}
       >
-        {/* Logo */}
-        <Avatar
-          src={`data:image/png;base64,${LOGO_B64}`}
-          alt="Kingdom Logo"
-          variant="rounded"
-          sx={{ width: 36, height: 36, borderRadius: 1.5, flexShrink: 0 }}
-        />
-
-        {/* Title group */}
-        <Box sx={{ minWidth: 0 }}>
-          <Typography
-            variant="subtitle1"
-            fontWeight={700}
-            sx={{ lineHeight: 1.2, color: 'text.primary', whiteSpace: 'nowrap' }}
-          >
-            Đăng Ký Tăng Ca
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.3 }}
-            noWrap
-          >
-            Bộ phận Trước Xử Lý – Kingdom Vietnam
-          </Typography>
-        </Box>
-
-        <Divider orientation="vertical" flexItem sx={{ mx: 0.5, my: 1.5 }} />
-
-        {/* Status */}
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
-          <Box
+        {/* ── Logo ─────────────────────────────────────────────── */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            flexShrink: 0,
+            textDecoration: 'none',
+            color: 'inherit',
+          }}
+        >
+          <Avatar
+            src={`data:image/png;base64,${LOGO_B64}`}
+            alt="Kingdom Logo"
+            variant="rounded"
             sx={{
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              bgcolor: selectedCount > 0 ? 'success.main' : '#D1D5DB',
+              width: 36,
+              height: 36,
+              borderRadius: '10px',
+              border: '1px solid',
+              borderColor: 'divider',
+              flexShrink: 0,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
             }}
           />
-          <Typography variant="caption" color="text.secondary" fontWeight={500}>
-            {selectedCount > 0 ? `${selectedCount} nhân viên đã chọn` : 'Chưa chọn nhân viên'}
-          </Typography>
+
+          {/* App title */}
+          <Box sx={{ minWidth: 0, display: { xs: 'none', sm: 'block' } }}>
+            <Typography
+              variant="subtitle2"
+              fontWeight={700}
+              sx={{ lineHeight: 1.25, color: 'text.primary', letterSpacing: '-0.01em' }}
+            >
+              Đăng Ký Tăng Ca
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.3, fontSize: '0.7rem' }}
+              noWrap
+            >
+              Kingdom Vietnam · Trước Xử Lý
+            </Typography>
+          </Box>
         </Box>
 
-        {/* Spacer */}
+        {/* ── Spacer ──────────────────────────────────────────── */}
         <Box sx={{ flex: 1 }} />
 
-        {/* Actions */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Tooltip title="Làm mới – xóa toàn bộ lựa chọn">
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<RefreshRoundedIcon />}
-              onClick={onReset}
-              sx={{
-                borderRadius: 2,
-                height: 36,
-                fontSize: '0.8125rem',
-                display: { xs: 'none', sm: 'flex' },
-              }}
-            >
-              Làm mới
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="Xuất PDF (Dùng tính năng In → Lưu PDF)">
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<PictureAsPdfRoundedIcon />}
-              onClick={onPrint}
-              sx={{
-                borderRadius: 2,
-                height: 36,
-                fontSize: '0.8125rem',
-                display: { xs: 'none', md: 'flex' },
-              }}
-            >
-              Xuất PDF
-            </Button>
-          </Tooltip>
-
+        {/* ── Actions ─────────────────────────────────────────── */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          
+          {/* Print – The single primary action */}
           <Button
             variant="contained"
             size="small"
-            startIcon={<PrintRoundedIcon />}
+            startIcon={<PrintRoundedIcon sx={{ fontSize: 16 }} />}
             onClick={onPrint}
-            sx={{ borderRadius: 2, height: 36, fontSize: '0.8125rem' }}
+            sx={{ height: 34, fontSize: '0.8125rem', borderRadius: '8px', minWidth: 90 }}
           >
             In biểu
           </Button>
+
+          {/* Avatar */}
+          <Avatar
+            sx={{
+              width: 32,
+              height: 32,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              bgcolor: '#4F63D2',
+              cursor: 'pointer',
+              border: '2px solid',
+              borderColor: 'divider',
+              transition: 'all 150ms ease',
+              '&:hover': { borderColor: 'primary.main', transform: 'scale(1.05)' },
+            }}
+          >
+            KV
+          </Avatar>
         </Box>
       </Toolbar>
     </AppBar>

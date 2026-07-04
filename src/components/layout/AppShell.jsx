@@ -2,15 +2,17 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import TopBar from './TopBar';
+import StatusBar from './StatusBar';
 
 /**
- * AppShell – root layout: TopBar (64px) + [Sidebar | Content]
+ * AppShell – root layout: TopBar(64px) + [Sidebar | Content] + StatusBar(28px)
  * Props:
- *   topBarProps : props forwarded to TopBar
- *   sidebar     : React.ReactNode
- *   children    : React.ReactNode (main content)
+ *   topBarProps   : props forwarded to TopBar
+ *   statusBarProps: props forwarded to StatusBar
+ *   sidebar       : React.ReactNode
+ *   children      : React.ReactNode (main content)
  */
-const AppShell = memo(function AppShell({ topBarProps, sidebar, children }) {
+const AppShell = memo(function AppShell({ topBarProps, statusBarProps, sidebar, children }) {
   return (
     <Box
       sx={{
@@ -33,6 +35,8 @@ const AppShell = memo(function AppShell({ topBarProps, sidebar, children }) {
         {sidebar}
         {children}
       </Box>
+
+      <StatusBar {...statusBarProps} />
     </Box>
   );
 });

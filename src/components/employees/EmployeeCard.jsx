@@ -10,8 +10,8 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import RoleChip from './RoleChip';
 
 const AVATAR_COLORS = [
-  '#5B6ABF', '#2E86AB', '#3D7A8A', '#5A7D7C',
-  '#7D5BA6', '#B56576', '#6B4226', '#3B7A57',
+  '#4F63D2', '#2563EB', '#0891B2', '#059669',
+  '#7C3AED', '#9333EA', '#C2410C', '#0F766E',
 ];
 const getAvatarColor = (id) =>
   AVATAR_COLORS[parseInt(id, 10) % AVATAR_COLORS.length] ?? AVATAR_COLORS[0];
@@ -23,12 +23,12 @@ const getInitials = (name) => {
 };
 
 /**
- * EmployeeCard – card item in the manage-employees tab
+ * EmployeeCard – card in the manage-employees tab
  * Props:
- *   employee    : { id, name, role }
- *   index       : number
- *   onEdit      : (id) => void
- *   onDelete    : (id) => void
+ *   employee : { id, name, role }
+ *   index    : number
+ *   onEdit   : (id) => void
+ *   onDelete : (id) => void
  */
 const EmployeeCard = memo(function EmployeeCard({ employee, index, onEdit, onDelete }) {
   const { id, name, role } = employee;
@@ -43,33 +43,40 @@ const EmployeeCard = memo(function EmployeeCard({ employee, index, onEdit, onDel
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 1.5,
+        gap: 1.25,
         px: 1.5,
-        py: 1.25,
-        borderRadius: 2,
-        border: '1px solid #E5E7EB',
-        backgroundColor: '#FFFFFF',
-        transition: 'all 150ms ease',
+        py: 1,
+        mx: 1.5,
+        my: 0.375,
+        borderRadius: '10px',
+        border: '1.5px solid',
+        borderColor: 'transparent',
+        backgroundColor: '#FAFAFA',
+        transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          borderColor: '#D1D5DB',
+          backgroundColor: '#F4F5F7',
+          borderColor: '#D4D7DC',
+          transform: 'translateY(-1px)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+          '& .emp-card-actions': { opacity: 1 },
         },
+        '&:active': { transform: 'none' },
       }}
     >
-      {/* Index */}
+      {/* Index badge */}
       <Box
         sx={{
-          width: 22,
-          height: 22,
+          width: 20,
+          height: 20,
           borderRadius: '50%',
-          bgcolor: '#F3F4F6',
+          bgcolor: '#EBEBEB',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
         }}
       >
-        <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 700, color: 'text.secondary' }}>
+        <Typography sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'text.secondary' }}>
           {index + 1}
         </Typography>
       </Box>
@@ -77,12 +84,14 @@ const EmployeeCard = memo(function EmployeeCard({ employee, index, onEdit, onDel
       {/* Avatar */}
       <Avatar
         sx={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           fontSize: '0.7rem',
           fontWeight: 700,
           bgcolor: avatarColor,
           flexShrink: 0,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+          letterSpacing: '0.02em',
         }}
       >
         {initials}
@@ -90,33 +99,34 @@ const EmployeeCard = memo(function EmployeeCard({ employee, index, onEdit, onDel
 
       {/* Info */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="body2" fontWeight={600} noWrap sx={{ color: 'text.primary', lineHeight: 1.3 }}>
+        <Typography variant="body2" fontWeight={600} noWrap sx={{ color: 'text.primary', lineHeight: 1.3, fontSize: '0.8125rem' }}>
           {name}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.2 }}>
           <Typography
             variant="caption"
-            sx={{ fontFamily: 'monospace', fontWeight: 700, color: 'primary.main', fontSize: '0.68rem' }}
+            sx={{ fontFamily: 'monospace', fontWeight: 700, color: 'text.secondary', fontSize: '0.6875rem', letterSpacing: '0.04em' }}
           >
-            {id}
+            #{id}
           </Typography>
           <RoleChip role={role} />
         </Box>
       </Box>
 
-      {/* Actions */}
-      <Box sx={{ display: 'flex', gap: 0.25, flexShrink: 0 }}>
+      {/* Actions – fade on hover */}
+      <Box className="emp-card-actions" sx={{ display: 'flex', gap: 0.25, flexShrink: 0, opacity: 0, transition: 'opacity 150ms ease' }}>
         <Tooltip title="Chỉnh sửa" placement="top">
           <IconButton
             size="small"
             onClick={handleEdit}
             aria-label={`Chỉnh sửa ${name}`}
             sx={{
+              width: 28, height: 28,
               color: 'text.secondary',
-              '&:hover': { color: 'primary.main', bgcolor: 'rgba(198,40,40,0.06)' },
+              '&:hover': { color: 'primary.main', bgcolor: 'rgba(185,28,28,0.06)' },
             }}
           >
-            <EditRoundedIcon sx={{ fontSize: 16 }} />
+            <EditRoundedIcon sx={{ fontSize: 15 }} />
           </IconButton>
         </Tooltip>
         <Tooltip title="Xóa" placement="top">
@@ -125,11 +135,12 @@ const EmployeeCard = memo(function EmployeeCard({ employee, index, onEdit, onDel
             onClick={handleDelete}
             aria-label={`Xóa ${name}`}
             sx={{
+              width: 28, height: 28,
               color: 'text.secondary',
-              '&:hover': { color: 'error.main', bgcolor: 'rgba(239,68,68,0.06)' },
+              '&:hover': { color: 'error.main', bgcolor: 'rgba(220,38,38,0.06)' },
             }}
           >
-            <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
+            <DeleteOutlineRoundedIcon sx={{ fontSize: 15 }} />
           </IconButton>
         </Tooltip>
       </Box>

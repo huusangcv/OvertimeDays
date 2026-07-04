@@ -49,6 +49,8 @@ function App() {
     resetSelection,
   } = useEmployeeManager();
 
+  const [zoom, setZoom] = React.useState(100);
+
   const dateStr = getDateStr();
 
   // Name of the employee being deleted (for confirmation message)
@@ -60,7 +62,11 @@ function App() {
         topBarProps={{
           onPrint: doPrint,
           onReset: resetSelection,
+          onSave: saveHistory,
           selectedCount: selectedIds.size,
+        }}
+        statusBarProps={{
+          zoom: zoom,
         }}
         sidebar={
           <SidebarPanel
@@ -98,6 +104,7 @@ function App() {
           onSave={saveHistory}
           otTimes={otTimes}
           setEmployeeTime={setEmployeeTime}
+          onZoomChange={setZoom}
         />
       </AppShell>
 

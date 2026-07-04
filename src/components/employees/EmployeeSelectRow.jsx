@@ -7,10 +7,10 @@ import Checkbox from '@mui/material/Checkbox';
 import { alpha } from '@mui/material/styles';
 import RoleChip from './RoleChip';
 
-/** Generate initials avatar color based on employee id */
+// Curated avatar palette – professional, subdued tones
 const AVATAR_COLORS = [
-  '#5B6ABF', '#2E86AB', '#3D7A8A', '#5A7D7C',
-  '#7D5BA6', '#B56576', '#6B4226', '#3B7A57',
+  '#5B6ABF', '#4A7C9D', '#3D7A8A', '#5A7D7C',
+  '#7D5BA6', '#B56576', '#8C6246', '#498467',
 ];
 const getAvatarColor = (id) =>
   AVATAR_COLORS[parseInt(id, 10) % AVATAR_COLORS.length] ?? AVATAR_COLORS[0];
@@ -22,7 +22,7 @@ const getInitials = (name) => {
 };
 
 /**
- * EmployeeSelectRow – single row in the select-employee tab
+ * EmployeeSelectRow – Minimalist professional employee card for selection
  * Props:
  *   employee   : { id, name, role }
  *   selected   : boolean
@@ -44,67 +44,86 @@ const EmployeeSelectRow = memo(function EmployeeSelectRow({ employee, selected, 
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 1.5,
-        px: 1.5,
-        py: 1,
+        gap: 2, // More breathing room
+        px: 2, // 16px padding
+        py: 1.5, // Total height ~68px
+        mx: 1.5,
+        my: 0.5,
         cursor: 'pointer',
-        borderRadius: 2,
-        mx: 1,
-        my: 0.25,
-        transition: 'all 150ms ease',
+        borderRadius: '8px',
         border: '1px solid',
-        borderColor: selected ? 'primary.main' : 'transparent',
-        backgroundColor: selected ? alpha('#C62828', 0.04) : 'transparent',
+        borderColor: selected ? alpha('#B91C1C', 0.15) : '#E4E7EB', // very light gray border
+        backgroundColor: selected ? alpha('#B91C1C', 0.06) : '#FFFFFF',
+        transition: 'all 150ms ease',
         '&:hover': {
-          backgroundColor: selected ? alpha('#C62828', 0.07) : '#F9FAFB',
-          borderColor: selected ? 'primary.main' : '#E5E7EB',
+          backgroundColor: selected ? alpha('#B91C1C', 0.08) : '#F9FAFB',
+          borderColor: selected ? alpha('#B91C1C', 0.2) : '#D1D5DB',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
         },
+        '&:active': { transform: 'scale(0.99)', boxShadow: 'none' },
+        outline: 'none',
       }}
     >
       {/* Avatar */}
       <Avatar
         sx={{
-          width: 34,
-          height: 34,
-          fontSize: '0.75rem',
-          fontWeight: 700,
-          bgcolor: selected ? 'primary.main' : avatarColor,
+          width: 40,
+          height: 40,
+          fontSize: '0.875rem',
+          fontWeight: 600,
+          bgcolor: avatarColor,
+          color: '#FFF',
           flexShrink: 0,
-          transition: 'background-color 150ms ease',
+          letterSpacing: '0.02em',
         }}
       >
         {initials}
       </Avatar>
 
       {/* Info */}
-      <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 0.25 }}>
         <Typography
           variant="body2"
-          fontWeight={selected ? 600 : 500}
+          fontWeight={600}
           noWrap
-          sx={{ color: 'text.primary', lineHeight: 1.3 }}
+          sx={{
+            color: 'text.primary',
+            fontSize: '0.875rem',
+          }}
         >
           {name}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography
             variant="caption"
-            sx={{ fontFamily: 'monospace', fontWeight: 700, color: 'primary.main', fontSize: '0.7rem' }}
+            sx={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontWeight: 500,
+              color: 'text.secondary',
+              fontSize: '0.75rem',
+            }}
           >
-            {id}
+            #{id}
           </Typography>
           <RoleChip role={role} />
         </Box>
       </Box>
 
-      {/* Checkbox */}
+      {/* Checkbox (Right Aligned) */}
       <Checkbox
         checked={selected}
         onChange={handleClick}
         onClick={e => e.stopPropagation()}
-        size="small"
+        size="medium"
         color="primary"
-        sx={{ p: 0.5, flexShrink: 0 }}
+        sx={{
+          p: 0.5,
+          flexShrink: 0,
+          color: '#C9CDD3',
+          '&.Mui-checked': {
+            color: 'primary.main',
+          }
+        }}
       />
     </Box>
   );

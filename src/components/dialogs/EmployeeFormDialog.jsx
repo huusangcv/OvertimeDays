@@ -26,14 +26,7 @@ const ROLE_OPTIONS = [
 ];
 
 /**
- * EmployeeFormDialog – Add / Edit employee dialog
- * Props:
- *   open        : boolean
- *   editingId   : string | null
- *   modalData   : { id, name, role }
- *   onChange    : (partial) => void
- *   onSave      : () => void
- *   onClose     : () => void
+ * EmployeeFormDialog – Premium Add / Edit employee dialog
  */
 const EmployeeFormDialog = memo(function EmployeeFormDialog({
   open,
@@ -57,36 +50,36 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 4,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+          borderRadius: '20px',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.12)',
         },
       }}
     >
       {/* Header */}
-      <DialogTitle sx={{ pb: 1, pt: 2.5, px: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <DialogTitle sx={{ pb: 1.5, pt: 3, px: 3.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
           <Box
             sx={{
-              width: 36,
-              height: 36,
-              borderRadius: 2,
-              bgcolor: 'rgba(198,40,40,0.08)',
+              width: 40,
+              height: 40,
+              borderRadius: '12px',
+              bgcolor: 'rgba(185,28,28,0.08)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
             {isEditing
-              ? <EditRoundedIcon sx={{ fontSize: 20, color: 'primary.main' }} />
-              : <PersonAddRoundedIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+              ? <EditRoundedIcon sx={{ fontSize: 22, color: 'primary.main' }} />
+              : <PersonAddRoundedIcon sx={{ fontSize: 22, color: 'primary.main' }} />
             }
           </Box>
           <Box>
-            <Typography variant="subtitle1" fontWeight={700} sx={{ lineHeight: 1.3 }}>
+            <Typography variant="subtitle1" fontWeight={700} sx={{ lineHeight: 1.3, color: 'text.primary' }}>
               {isEditing ? 'Cập nhật nhân viên' : 'Thêm nhân viên mới'}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {isEditing ? `Đang chỉnh sửa mã ${editingId}` : 'Điền đầy đủ thông tin bên dưới'}
+              {isEditing ? `Đang chỉnh sửa mã #${editingId}` : 'Điền đầy đủ thông tin bên dưới'}
             </Typography>
           </Box>
         </Box>
@@ -96,19 +89,20 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
           aria-label="Đóng"
           sx={{
             position: 'absolute',
-            right: 16,
-            top: 16,
+            right: 20,
+            top: 20,
             color: 'text.secondary',
-            '&:hover': { bgcolor: '#F3F4F6' },
+            bgcolor: '#F3F4F6',
+            '&:hover': { bgcolor: '#E5E7EB', color: 'text.primary' },
           }}
         >
-          <CloseRoundedIcon sx={{ fontSize: 20 }} />
+          <CloseRoundedIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </DialogTitle>
 
       {/* Body */}
-      <DialogContent sx={{ px: 3, pt: 2, pb: 1 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+      <DialogContent sx={{ px: 3.5, pt: 2.5, pb: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
             variant="outlined"
             label="Mã nhân viên (4 số cuối)"
@@ -119,6 +113,7 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
             slotProps={{ input: { maxLength: 4, inputMode: 'numeric' } }}
             helperText={isEditing ? 'Nhập mã nhân viên mới nếu cần thay đổi' : 'Nhập 4 chữ số cuối của mã thẻ'}
             fullWidth
+            sx={{ '& .MuiFormHelperText-root': { ml: 0 } }}
           />
           <TextField
             variant="outlined"
@@ -127,7 +122,6 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
             value={modalData.name}
             onChange={e => onChange({ ...modalData, name: e.target.value })}
             onKeyDown={handleKeyDown}
-            helperText="Nhập đầy đủ họ tên nhân viên"
             fullWidth
           />
           <FormControl fullWidth size="small" variant="outlined">
@@ -136,7 +130,6 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
               label="Chức danh"
               value={modalData.role}
               onChange={e => onChange({ ...modalData, role: e.target.value })}
-              sx={{ borderRadius: 2 }}
             >
               {ROLE_OPTIONS.map(opt => (
                 <MenuItem key={opt.value} value={opt.value}>
@@ -149,19 +142,20 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
       </DialogContent>
 
       {/* Footer */}
-      <DialogActions sx={{ px: 3, py: 2.5, gap: 1 }}>
+      <DialogActions sx={{ px: 3.5, py: 3, gap: 1.5 }}>
         <Button
           variant="outlined"
+          color="inherit"
           onClick={onClose}
-          sx={{ borderRadius: 2, flex: 1 }}
+          sx={{ flex: 1, height: 42, color: 'text.secondary', borderColor: 'divider' }}
         >
-          Hủy
+          Hủy bỏ
         </Button>
         <Button
           variant="contained"
           onClick={onSave}
           startIcon={<SaveRoundedIcon />}
-          sx={{ borderRadius: 2, flex: 1 }}
+          sx={{ flex: 1, height: 42 }}
         >
           {isEditing ? 'Cập nhật' : 'Thêm mới'}
         </Button>
