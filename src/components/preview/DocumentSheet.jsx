@@ -1,0 +1,135 @@
+// src/components/preview/DocumentSheet.jsx
+import React, { memo } from 'react';
+import { LOGO_B64, MAX_ROWS } from '../../constants';
+
+/**
+ * DocumentSheet – Exact Excel replica table (unchanged logic)
+ * Props:
+ *   selArr   : Employee[]
+ *   isSun    : boolean
+ *   dateStr  : string
+ *   deptName        : string
+ *   otTimes         : object
+ *   setEmployeeTime : (id, time) => void
+ */
+const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, deptName, otTimes = {}, setEmployeeTime = () => {} }) {
+  const dataRows = Array.from({ length: MAX_ROWS }).map((_, i) => {
+    const e = selArr[i] || null;
+    return (
+      <tr key={i} className="drow">
+        <td className="d-stt">{i + 1}</td>
+        <td className={`d-id ${e ? '' : 'd-empty'}`}>{e ? e.id : ''}</td>
+        <td className={`d-name ${e ? '' : 'd-empty'}`}>{e ? e.name : ''}</td>
+        <td className="d-role">{e ? e.role || 'CN' : ''}</td>
+        <td className="d-time">
+          {e && (
+            <input
+              type="text"
+              className="time-input"
+              value={otTimes[e.id] || ''}
+              onChange={(evt) => setEmployeeTime(e.id, evt.target.value)}
+              placeholder="VD: 17:00-20:00"
+            />
+          )}
+        </td>
+        <td className="d-sign"></td>
+        <td className="d-note">{isSun && e ? 'TG' : ''}</td>
+      </tr>
+    );
+  });
+
+  return (
+    <div className="sheet-wrap">
+      <table className="xl-table">
+        <colgroup>
+          <col className="col-a" />
+          <col className="col-b" />
+          <col className="col-c" />
+          <col className="col-d" />
+          <col className="col-e" />
+          <col className="col-f" />
+          <col className="col-g" />
+        </colgroup>
+        <tbody>
+          {/* Row 1: Company header */}
+          <tr className="row1">
+            <td colSpan="7" className="r1-cell" style={{ padding: 0 }}>
+              <div className="r1-inner">
+                <img className="r1-logo" src={`data:image/png;base64,${LOGO_B64}`} alt="Kingdom Logo" />
+                <div className="r1-text">
+                  CÔNG TY TNHH THIẾT BỊ KIỂM SOÁT DÒNG CHẢY KINGDOM VIỆT NAM<br />
+                  <span style={{ fontSize: '11pt' }}>越南鐵王流體控制設備責任有限公司</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          {/* Row 2: Title block */}
+          <tr className="row2">
+            <td colSpan="7" className="r2-cell">
+              <div className="r2-title">ĐƠN XIN TỰ NGUYỆN LÀM THÊM GIỜ</div>
+              <div className="r2-subtitle">自愿加班申请单</div>
+              <div className="r2-body">
+                <b>1. Điều kiện làm thêm giờ 加班條件:</b><br />
+                &nbsp;&nbsp;a. Xử lý sự cố sản xuất 處理生產故障<br />
+                &nbsp;&nbsp;b. Giải quyết công việc cấp bách không thể trì hoãn 處理不可拖延的緊急工作<br />
+                &nbsp;&nbsp;c. Xử lý kịp thời các sản phẩm do yêu cầu nghiêm ngặt không thể bỏ dở được 及時處理產品生產問題<br />
+                <b>2.</b> Chúng tôi tình nguyện phối hợp công ty để hoàn thành nhiệm vụ và để nâng cao thu nhập<br />
+                &nbsp;&nbsp;&nbsp;我們願意配合公司完成任務以及增加自己收入
+              </div>
+            </td>
+          </tr>
+
+          {/* Row 3: Dept + Date */}
+          <tr className="row3">
+            <td colSpan="3" className="r3-dept">Bộ Phận 部门: {deptName}</td>
+            <td className="r3-mid"></td>
+            <td colSpan="3" className="r3-date">{dateStr}</td>
+          </tr>
+
+          {/* Row 4: Column headers */}
+          <tr className="row4">
+            <td className="hdr">STT<br /><span className="sub">序号</span></td>
+            <td className="hdr">Mã số thẻ<br /><span className="sub">工号</span></td>
+            <td className="hdr">Họ và tên<br /><span className="sub">员工姓名</span></td>
+            <td className="hdr">Chức vụ<br /><span className="sub">职务</span></td>
+            <td className="hdr">Thời gian làm thêm<br /><span className="sub">加班时间</span></td>
+            <td className="hdr">Ký tên<br /><span className="sub">签名</span></td>
+            <td className="hdr">Ghi chú<br /><span className="sub">备注</span></td>
+          </tr>
+
+          {/* Data rows */}
+          {dataRows}
+
+          {/* Row 24: Summary */}
+          <tr className="row24">
+            <td colSpan="7" className="r24-cell">
+              Gồm: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              Phần sữa &amp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              Phần cơm :
+            </td>
+          </tr>
+
+          {/* Row 25: Signatures */}
+          {isSun ? (
+            <tr className="row25-sun">
+              <td colSpan="2" className="sig-cell">Xưởng trưởng{'\n'}廠長</td>
+              <td className="sig-cell">Phòng nhân sự{'\n'}人事管</td>
+              <td colSpan="2" className="sig-cell">Chủ quản bộ phận{'\n'}部门主管</td>
+              <td colSpan="2" className="sig-cell" style={{ borderRight: 'none' }}>{'      '}Tổ trưởng{'\n'}{'      '}组长</td>
+            </tr>
+          ) : (
+            <tr className="row25-tca">
+              <td colSpan="2" className="sig-cell">Phòng nhân sự{'\n'}人事管</td>
+              <td className="sig-cell">{' '}Chủ quản bộ phận{'\n'}部门主管</td>
+              <td colSpan="2" className="sig-cell">Khoa trưởng{'\n'}课长</td>
+              <td colSpan="2" className="sig-cell" style={{ borderRight: 'none' }}>Tổ trưởng{'\n'}组长</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+});
+
+export default DocumentSheet;

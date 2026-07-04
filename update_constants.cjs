@@ -1,0 +1,1 @@
+const fs = require('fs'); const b64 = fs.readFileSync('tmp_b64.txt', 'utf8'); let constants = fs.readFileSync('src/constants.js', 'utf8'); constants = constants.replace(/export const LOGO_B64 = '[^']+';/, 'export const LOGO_B64 = \'' + b64 + '\';'); fs.writeFileSync('src/constants.js', constants);
