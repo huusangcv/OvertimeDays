@@ -102,7 +102,7 @@ const EmployeeFormDialog = memo(function EmployeeFormDialog({
 
       {/* Body */}
       <DialogContent sx={{ px: 3.5, pt: 2.5, pb: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: 2 }}>
           <TextField
             variant="outlined"
             label="Mã nhân viên (4 số cuối)"
