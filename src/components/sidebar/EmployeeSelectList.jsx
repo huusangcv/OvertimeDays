@@ -30,10 +30,13 @@ const EmployeeSelectList = memo(function EmployeeSelectList({
     filteredEmployees.length > 0 && filteredEmployees.every(e => selectedIds.has(e.id));
   const someChecked =
     filteredEmployees.some(e => selectedIds.has(e.id)) && !allChecked;
+  // Nếu đang có bất kỳ ai được chọn (kể cả indeterminate) → bỏ chọn hết
+  // Nếu chưa có ai được chọn → chọn tất cả
+  const anyChecked = allChecked || someChecked;
 
   const handleToggleAll = useCallback(
-    (e) => onToggleAll(e.target.checked),
-    [onToggleAll],
+    () => onToggleAll(!anyChecked),
+    [onToggleAll, anyChecked],
   );
 
   const isEmpty  = filteredEmployees.length === 0;
@@ -60,8 +63,7 @@ const EmployeeSelectList = memo(function EmployeeSelectList({
           >
             <Checkbox
               size="small"
-              checked={allChecked}
-              indeterminate={someChecked}
+              checked={anyChecked}
               onChange={handleToggleAll}
               color="primary"
               sx={{ p: 0.5, mr: 1 }}

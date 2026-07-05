@@ -87,11 +87,14 @@ export function useEmployeeManager() {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (checked) {
-        filteredEmployees.forEach(emp => {
-          if (next.size < MAX_ROWS) next.add(emp.id);
-        });
+        for (const emp of filteredEmployees) {
+          if (next.size >= MAX_ROWS) break;
+          next.add(emp.id);
+        }
       } else {
-        filteredEmployees.forEach(emp => next.delete(emp.id));
+        for (const emp of filteredEmployees) {
+          next.delete(emp.id);
+        }
       }
       return next;
     });

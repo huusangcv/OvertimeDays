@@ -90,7 +90,7 @@ const TopBar = memo(function TopBar({ onPrint }) {
 
         {/* ── Actions ─────────────────────────────────────────── */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          
+
           {/* Print – The single primary action */}
           <Button
             variant="contained"
@@ -117,7 +117,7 @@ const TopBar = memo(function TopBar({ onPrint }) {
               '&:hover': { borderColor: 'primary.main', transform: 'scale(1.05)' },
             }}
           >
-            KV
+            HS
           </Avatar>
         </Box>
       </Toolbar>
