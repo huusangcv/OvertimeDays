@@ -90,7 +90,7 @@ const FormInfoSection = memo(function FormInfoSection({
       </Box>
 
       {/* Tóm tắt: số NV đã chọn và số trang sẽ in */}
-      {selectedCount > 0 && (
+      {/* {selectedCount > 0 && (
         <Box
           sx={{
             mt: 2,
@@ -111,7 +111,7 @@ const FormInfoSection = memo(function FormInfoSection({
             {pageCount} trang
           </Typography>
         </Box>
-      )}
+      )} */}
     </Box>
   );
 });

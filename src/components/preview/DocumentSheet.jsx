@@ -28,7 +28,7 @@ const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, dept
               className="time-input"
               value={otTimes[e.id] || ''}
               onChange={(evt) => setEmployeeTime(e.id, evt.target.value)}
-              placeholder="VD: 17:00-20:00"
+              placeholder="VD: 4h30 - 19h30"
             />
           )}
         </td>
