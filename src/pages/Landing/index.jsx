@@ -169,6 +169,10 @@ function DepartmentCard({ dept, onNavigate }) {
 function LandingPage() {
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    document.title = 'Đăng Ký Tăng Ca';
+  }, []);
+
   return (
     <Box
       sx={{

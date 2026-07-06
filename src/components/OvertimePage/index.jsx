@@ -15,6 +15,7 @@ import SidebarPanel from '../sidebar/SidebarPanel';
 import PreviewPanel from '../preview/PreviewPanel';
 import EmployeeFormDialog from '../dialogs/EmployeeFormDialog';
 import ConfirmDialog from '../dialogs/ConfirmDialog';
+import HistoryPreviewDialog from '../dialogs/HistoryPreviewDialog';
 
 /**
  * OvertimePage – Trang đăng ký tăng ca dùng chung cho mọi bộ phận.
@@ -33,7 +34,7 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
     otDate, setOtDate,
     otType, setOtType,
     otTimes, setEmployeeTime,
-    otHistory, saveHistory, loadHistory, deleteHistory,
+    otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen,
     editingId,
     modalData, setModalData,
@@ -58,9 +59,15 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
     saveEmp,
     doPrint,
     resetSelection,
-  } = useEmployeeManager({ initialEmployeeList, departmentId });
+  } = useEmployeeManager({ initialEmployeeList, departmentId, departmentName });
+
+  // Update document title dynamically based on the department
+  React.useEffect(() => {
+    document.title = `Đăng Ký Tăng Ca – ${departmentName}`;
+  }, [departmentName]);
 
   const [zoom, setZoom] = React.useState(100);
+  const [previewRecord, setPreviewRecord] = React.useState(null);
 
   const dateStr = getDateStr();
 
@@ -79,7 +86,6 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
         topBarProps={{
           onPrint: doPrint,
           onReset: resetSelection,
-          onSave: saveHistory,
           selectedCount: selectedIds.size,
           departmentName, // Truyền tên bộ phận vào TopBar
         }}
@@ -108,8 +114,9 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
             onDelete={requestDelete}
             onAdd={openAdd}
             otHistory={otHistory}
-            loadHistory={loadHistory}
-            deleteHistory={deleteHistory}
+            onViewHistory={setPreviewRecord}
+            onDeleteHistory={deleteHistoryRecord}
+            onClearHistory={clearAllHistory}
           />
         }
       >
@@ -119,7 +126,6 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
           dateStr={dateStr}
           deptName={pdfDeptName}
           onPrint={doPrint}
-          onSave={saveHistory}
           otTimes={otTimes}
           setEmployeeTime={setEmployeeTime}
           onZoomChange={setZoom}
@@ -147,6 +153,13 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
         }
         onConfirm={confirmDelete}
         onCancel={cancelDelete}
+      />
+
+      {/* History Read-Only Preview Dialog */}
+      <HistoryPreviewDialog
+        open={Boolean(previewRecord)}
+        record={previewRecord}
+        onClose={() => setPreviewRecord(null)}
       />
 
       {/* Snackbar Toast Notifications */}

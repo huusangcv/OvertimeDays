@@ -9,13 +9,17 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import RestoreRoundedIcon from '@mui/icons-material/RestoreRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import Button from '@mui/material/Button';
+
 /**
  * HistoryList – Premium card list for saved records
  */
 const HistoryList = memo(function HistoryList({
   otHistory,
-  loadHistory,
-  deleteHistory
+  onViewHistory,
+  onDeleteHistory,
+  onClearHistory
 }) {
   if (!otHistory || otHistory.length === 0) {
     return (
@@ -31,12 +35,25 @@ const HistoryList = memo(function HistoryList({
   }
 
   return (
-    <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pt: 1.5 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+    <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+      {/* Header section with Clear All */}
+      <Box sx={{ px: 2, pt: 2, pb: 1, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          size="small"
+          color="error"
+          onClick={onClearHistory}
+          sx={{ fontSize: '0.75rem', textTransform: 'none', fontWeight: 600 }}
+        >
+          Xóa tất cả
+        </Button>
+      </Box>
+
+      <Box sx={{ px: 2, pb: 2, display: 'flex', flexDirection: 'column', gap: 1.25 }}>
         {otHistory.map(record => (
           <Paper
             key={record.id}
             variant="outlined"
+            onClick={() => onViewHistory(record)}
             sx={{
               p: 2,
               display: 'flex',
@@ -64,32 +81,39 @@ const HistoryList = memo(function HistoryList({
                   {record.type}
                 </Typography>
               </Box>
-              <Box sx={{ bgcolor: 'rgba(185,28,28,0.08)', px: 1, py: 0.25, borderRadius: 1 }}>
-                <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.6875rem' }}>
-                  {record.selectedIds ? record.selectedIds.length : 0} NV
-                </Typography>
+              <Box sx={{ display: 'flex', gap: 0.75 }}>
+                <Box sx={{ bgcolor: 'rgba(185,28,28,0.08)', px: 1, py: 0.25, borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.6875rem' }}>
+                    {record.employeeCount || 0} NV
+                  </Typography>
+                </Box>
+                <Box sx={{ bgcolor: '#F3F4F6', px: 1, py: 0.25, borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.6875rem' }}>
+                    {record.pageCount || 1} trang
+                  </Typography>
+                </Box>
               </Box>
             </Box>
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
               <Typography variant="caption" sx={{ color: '#9CA3AF', fontSize: '0.6875rem' }}>
-                Lưu lúc: {new Date(record.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                Lưu lúc: {new Date(record.createdAt || record.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
               </Typography>
 
               <Box className="history-actions" sx={{ display: 'flex', gap: 0.5, opacity: { xs: 1, sm: 0 }, transition: 'opacity 150ms ease' }}>
-                <Tooltip title="Khôi phục biểu này">
+                <Tooltip title="Xem bản in">
                   <IconButton 
                     size="small" 
-                    onClick={() => loadHistory(record)}
+                    onClick={(e) => { e.stopPropagation(); onViewHistory(record); }}
                     sx={{ width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'rgba(185,28,28,0.08)' } }}
                   >
-                    <RestoreRoundedIcon sx={{ fontSize: 16 }} />
+                    <VisibilityRoundedIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Xóa">
                   <IconButton 
                     size="small" 
-                    onClick={() => deleteHistory(record.id)}
+                    onClick={(e) => { e.stopPropagation(); onDeleteHistory(record.id); }}
                     sx={{ width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'error.main', bgcolor: 'rgba(220,38,38,0.08)' } }}
                   >
                     <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />

@@ -1,17 +1,17 @@
 // src/hooks/useEmployeeManager.js
-import { useState, useMemo, useCallback } from 'react';
-// MAX_ROWS không còn dùng trong hook — việc giới hạn đã được chuyển
-// sang phân trang (PreviewPanel). Thêm bao nhiêu NV cũng tự thêm trang mới.
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { MAX_ROWS } from '../constants';
+import * as historyService from '../services/historyService';
+
+// MAX_ROWS vẫn cần để tính pageCount khi lưu lịch sử.
 
 /**
  * Hook quản lý nhân viên và đăng ký tăng ca.
  * @param {Object} options
  * @param {Array}  options.initialEmployeeList - Danh sách nhân viên ban đầu của bộ phận
- * @param {string} options.departmentId        - ID bộ phận (dùng làm key localStorage)
+ * @param {string} options.departmentName      - Tên bộ phận
  */
-export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'default' } = {}) {
-  // Khóa localStorage riêng theo từng bộ phận để lịch sử không bị lẫn
-  const HISTORY_KEY = `otHistory_${departmentId}`;
+export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'default', departmentName = '' } = {}) {
 
   const [employees, setEmployees] = useState(initialEmployeeList);
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -20,13 +20,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const [otDate, setOtDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [otType, setOtType] = useState('TCA THƯỜNG');
   const [otTimes, setOtTimes] = useState({});
-  const [otHistory, setOtHistory] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
-    } catch {
-      return [];
-    }
-  });
+  const [otHistory, setOtHistory] = useState(() => historyService.getHistory(departmentId));
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -185,13 +179,41 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     closeModal();
   }, [modalData, editingId, employees, showToast, closeModal]);
 
+  const refreshHistory = useCallback(() => {
+    setOtHistory(historyService.getHistory(departmentId));
+  }, [departmentId]);
+
   const doPrint = useCallback(() => {
     if (selectedIds.size === 0) {
       showToast('Vui lòng chọn ít nhất 1 nhân viên', 'warning');
       return;
     }
-    window.print();
-  }, [selectedIds, showToast]);
+
+    // 1. Lưu snapshot trước khi in
+    const snapshotData = {
+      id: Date.now().toString(),
+      departmentId,
+      departmentName,
+      createdAt: new Date().toISOString(),
+      date: otDate,
+      shift: otType,
+      reason: '',
+      employeeCount: selectedIds.size,
+      employees: selArr, // Lưu toàn bộ data NV đã chọn
+      formData: { otTimes },
+      pageCount: Math.ceil(selectedIds.size / MAX_ROWS) || 1,
+      version: 1,
+    };
+
+    historyService.saveHistory(snapshotData);
+    refreshHistory();
+
+    // 2. Gọi lệnh in
+    // Cần 1 khoảng delay nhỏ để DOM render lại nhãn lịch sử nếu cần thiết
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  }, [selectedIds, showToast, departmentId, departmentName, otDate, otType, selArr, otTimes, refreshHistory]);
 
   const resetSelection = useCallback(() => {
     setSelectedIds(new Set());
@@ -203,51 +225,31 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     setOtTimes(prev => ({ ...prev, [id]: time }));
   }, []);
 
-  const saveHistory = useCallback(() => {
-    if (selectedIds.size === 0) {
-      showToast('Không có nhân viên nào được chọn để lưu', 'warning');
-      return;
-    }
-    const newRecord = {
-      id: Date.now().toString(),
-      date: otDate,
-      type: otType,
-      selectedIds: Array.from(selectedIds),
-      otTimes,
-      timestamp: new Date().toISOString(),
-    };
-    // Lưu lịch sử vào key riêng của bộ phận
-    setOtHistory(prev => {
-      const next = [newRecord, ...prev];
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
-      return next;
-    });
-    showToast('Đã lưu biểu tăng ca');
-  }, [otDate, otType, selectedIds, otTimes, showToast, HISTORY_KEY]);
-
   const loadHistory = useCallback((record) => {
-    setOtDate(record.date || new Date().toISOString().split('T')[0]);
-    setOtType(record.type || 'TCA THƯỜNG');
-    setSelectedIds(new Set(record.selectedIds || []));
-    setOtTimes(record.otTimes || {});
-    showToast('Đã tải lại lịch sử');
+    // Không dùng để load vào form sửa nữa, chức năng này được thay thế bằng xem read-only
+    showToast('Bản ghi lịch sử ở chế độ chỉ đọc (Read-only)', 'info');
   }, [showToast]);
 
-  const deleteHistory = useCallback((id) => {
-    setOtHistory(prev => {
-      const next = prev.filter(r => r.id !== id);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
-      return next;
-    });
-    showToast('Đã xóa lịch sử');
-  }, [showToast, HISTORY_KEY]);
+  const deleteHistoryRecord = useCallback((id) => {
+    if (historyService.deleteHistory(id)) {
+      refreshHistory();
+      showToast('Đã xóa biểu khỏi lịch sử');
+    }
+  }, [refreshHistory, showToast]);
+
+  const clearAllHistory = useCallback(() => {
+    if (historyService.clearHistory(departmentId)) {
+      refreshHistory();
+      showToast('Đã xóa toàn bộ lịch sử bộ phận');
+    }
+  }, [departmentId, refreshHistory, showToast]);
 
   return {
     // state
     employees, selectedIds, activeTab, setActiveTab,
     searchQuery, setSearchQuery,
     otDate, setOtDate, otType, setOtType,
-    otTimes, setEmployeeTime, otHistory, saveHistory, loadHistory, deleteHistory,
+    otTimes, setEmployeeTime, otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen, editingId, modalData, setModalData,
     confirmOpen, deletingId,
     snackbar, closeSnackbar,

@@ -29,8 +29,9 @@ const EmployeeListSection = memo(function EmployeeListSection({
   onDelete,
   onAdd,
   otHistory,
-  loadHistory,
-  deleteHistory,
+  onViewHistory,
+  onDeleteHistory,
+  onClearHistory,
 }) {
   const handleTabChange = useCallback((_, val) => setActiveTab(val), [setActiveTab]);
 
@@ -133,8 +134,9 @@ const EmployeeListSection = memo(function EmployeeListSection({
       {activeTab === 'history' && (
         <HistoryList
           otHistory={otHistory}
-          loadHistory={loadHistory}
-          deleteHistory={deleteHistory}
+          onViewHistory={onViewHistory}
+          onDeleteHistory={onDeleteHistory}
+          onClearHistory={onClearHistory}
         />
       )}
     </Box>

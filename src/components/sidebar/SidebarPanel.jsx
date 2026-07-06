@@ -20,7 +20,7 @@ const SidebarPanel = memo(function SidebarPanel({
   searchQuery, onSearchChange,
   onToggle, onToggleAll,
   onEdit, onDelete, onAdd,
-  otHistory, loadHistory, deleteHistory,
+  otHistory, onViewHistory, onDeleteHistory, onClearHistory,
 }) {
   return (
     <Box
@@ -93,8 +93,9 @@ const SidebarPanel = memo(function SidebarPanel({
           onDelete={onDelete}
           onAdd={onAdd}
           otHistory={otHistory}
-          loadHistory={loadHistory}
-          deleteHistory={deleteHistory}
+          onViewHistory={onViewHistory}
+          onDeleteHistory={onDeleteHistory}
+          onClearHistory={onClearHistory}
         />
       </Box>
     </Box>
