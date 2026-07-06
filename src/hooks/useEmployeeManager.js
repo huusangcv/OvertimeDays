@@ -1,9 +1,19 @@
 // src/hooks/useEmployeeManager.js
 import { useState, useMemo, useCallback } from 'react';
-import { initialEmployees, MAX_ROWS } from '../constants';
+// MAX_ROWS không còn dùng trong hook — việc giới hạn đã được chuyển
+// sang phân trang (PreviewPanel). Thêm bao nhiêu NV cũng tự thêm trang mới.
 
-export function useEmployeeManager() {
-  const [employees, setEmployees] = useState(initialEmployees);
+/**
+ * Hook quản lý nhân viên và đăng ký tăng ca.
+ * @param {Object} options
+ * @param {Array}  options.initialEmployeeList - Danh sách nhân viên ban đầu của bộ phận
+ * @param {string} options.departmentId        - ID bộ phận (dùng làm key localStorage)
+ */
+export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'default' } = {}) {
+  // Khóa localStorage riêng theo từng bộ phận để lịch sử không bị lẫn
+  const HISTORY_KEY = `otHistory_${departmentId}`;
+
+  const [employees, setEmployees] = useState(initialEmployeeList);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [activeTab, setActiveTab] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,7 +22,7 @@ export function useEmployeeManager() {
   const [otTimes, setOtTimes] = useState({});
   const [otHistory, setOtHistory] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('otHistory')) || [];
+      return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
     } catch {
       return [];
     }
@@ -52,7 +62,9 @@ export function useEmployeeManager() {
     return `Ngày ${parseInt(d)} tháng ${parseInt(m)} năm ${y}`;
   }, [otDate]);
 
-  const deptName = isSun ? 'Trước xử lý' : 'Trước Xử Lý';
+  // deptName không còn hard-code — được truyền vào từ bên ngoài qua prop departmentName
+  // Giữ biến này để tương thích với DocumentSheet (PDF template dùng chung)
+  const deptName = departmentId;
 
   // Sort priorities for roles
   const ROLE_PRIORITY = { TT: 1, CT: 2, NV: 3, CN: 4 };
@@ -67,28 +79,25 @@ export function useEmployeeManager() {
   }, [employees, selectedIds]);
 
   // Handlers
+  // Không giới hạn số lượng NV — phân trang tự động xử lý khi vượt MAX_ROWS
   const toggleEmp = useCallback((id) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
       } else {
-        if (next.size >= MAX_ROWS) {
-          showToast(`Tối đa ${MAX_ROWS} nhân viên`, 'warning');
-          return prev;
-        }
         next.add(id);
       }
       return next;
     });
-  }, [showToast]);
+  }, []);
 
   const toggleAll = useCallback((checked) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (checked) {
+        // Chọn tất cả — không giới hạn số lượng
         for (const emp of filteredEmployees) {
-          if (next.size >= MAX_ROWS) break;
           next.add(emp.id);
         }
       } else {
@@ -207,13 +216,14 @@ export function useEmployeeManager() {
       otTimes,
       timestamp: new Date().toISOString(),
     };
+    // Lưu lịch sử vào key riêng của bộ phận
     setOtHistory(prev => {
       const next = [newRecord, ...prev];
-      localStorage.setItem('otHistory', JSON.stringify(next));
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
       return next;
     });
     showToast('Đã lưu biểu tăng ca');
-  }, [otDate, otType, selectedIds, otTimes, showToast]);
+  }, [otDate, otType, selectedIds, otTimes, showToast, HISTORY_KEY]);
 
   const loadHistory = useCallback((record) => {
     setOtDate(record.date || new Date().toISOString().split('T')[0]);
@@ -226,11 +236,11 @@ export function useEmployeeManager() {
   const deleteHistory = useCallback((id) => {
     setOtHistory(prev => {
       const next = prev.filter(r => r.id !== id);
-      localStorage.setItem('otHistory', JSON.stringify(next));
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
       return next;
     });
     showToast('Đã xóa lịch sử');
-  }, [showToast]);
+  }, [showToast, HISTORY_KEY]);
 
   return {
     // state

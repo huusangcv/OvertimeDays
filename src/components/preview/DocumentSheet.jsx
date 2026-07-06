@@ -12,7 +12,7 @@ import { LOGO_B64, MAX_ROWS } from '../../constants';
  *   otTimes         : object
  *   setEmployeeTime : (id, time) => void
  */
-const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, deptName, otTimes = {}, setEmployeeTime = () => {} }) {
+const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, deptName, otTimes = {}, setEmployeeTime = () => { } }) {
   const dataRows = Array.from({ length: MAX_ROWS }).map((_, i) => {
     const e = selArr[i] || null;
     return (
@@ -33,7 +33,9 @@ const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, dept
           )}
         </td>
         <td className="d-sign"></td>
-        <td className="d-note">{isSun && e ? 'TG' : ''}</td>
+        <td className="d-note">
+          {e ? (e.note || (isSun ? 'TG' : '')) : ''}
+        </td>
       </tr>
     );
   });
@@ -113,17 +115,26 @@ const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, dept
           {/* Row 25: Signatures */}
           {isSun ? (
             <tr className="row25-sun">
-              <td colSpan="2" className="sig-cell">Xưởng trưởng{'\n'}廠長</td>
-              <td className="sig-cell">Phòng nhân sự{'\n'}人事管</td>
-              <td colSpan="2" className="sig-cell">Chủ quản bộ phận{'\n'}部门主管</td>
-              <td colSpan="2" className="sig-cell" style={{ borderRight: 'none' }}>{'      '}Tổ trưởng{'\n'}{'      '}组长</td>
+              <td colSpan="7" style={{ padding: 0, border: 'none' }}>
+                <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+                  <div className="sig-cell" style={{ flex: 1 }}>Xưởng trưởng{'\n'}廠長</div>
+                  <div className="sig-cell" style={{ flex: 1 }}>Phòng nhân sự{'\n'}人事管</div>
+                  <div className="sig-cell" style={{ flex: 1 }}>Chủ quản bộ phận{'\n'}部门主管</div>
+                  <div className="sig-cell" style={{ flex: 1 }}>Khoa trưởng{'\n'}课长</div>
+                  <div className="sig-cell" style={{ flex: 1, borderRight: 'none' }}>Tổ trưởng{'\n'}组长</div>
+                </div>
+              </td>
             </tr>
           ) : (
             <tr className="row25-tca">
-              <td colSpan="2" className="sig-cell">Phòng nhân sự{'\n'}人事管</td>
-              <td className="sig-cell">{' '}Chủ quản bộ phận{'\n'}部门主管</td>
-              <td colSpan="2" className="sig-cell">Khoa trưởng{'\n'}课长</td>
-              <td colSpan="2" className="sig-cell" style={{ borderRight: 'none' }}>Tổ trưởng{'\n'}组长</td>
+              <td colSpan="7" style={{ padding: 0, border: 'none' }}>
+                <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+                  <div className="sig-cell" style={{ flex: 1 }}>Phòng nhân sự{'\n'}人事管</div>
+                  <div className="sig-cell" style={{ flex: 1 }}>Chủ quản bộ phận{'\n'}部门主管</div>
+                  <div className="sig-cell" style={{ flex: 1 }}>Khoa trưởng{'\n'}课长</div>
+                  <div className="sig-cell" style={{ flex: 1, borderRight: 'none' }}>Tổ trưởng{'\n'}组长</div>
+                </div>
+              </td>
             </tr>
           )}
         </tbody>

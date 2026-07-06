@@ -1,21 +1,26 @@
 // src/components/layout/TopBar.jsx
 import React, { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { LOGO_B64 } from '../../constants';
 
 /**
  * TopBar – 64px premium application header
- * Single Source of Truth: Only generic app info and the main Action (In biểu)
  * Props:
- *   onPrint: () => void
+ *   onPrint         : () => void
+ *   departmentName  : string  — Tên bộ phận hiển thị trên top bar
  */
-const TopBar = memo(function TopBar({ onPrint }) {
+const TopBar = memo(function TopBar({ onPrint, departmentName = '' }) {
+  const navigate = useNavigate();
   return (
     <AppBar
       component="header"
@@ -80,7 +85,8 @@ const TopBar = memo(function TopBar({ onPrint }) {
               sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.3, fontSize: '0.7rem' }}
               noWrap
             >
-              Kingdom Vietnam · Trước Xử Lý
+              Kingdom Vietnam
+              {departmentName ? ` · ${departmentName}` : ''}
             </Typography>
           </Box>
         </Box>
@@ -88,8 +94,27 @@ const TopBar = memo(function TopBar({ onPrint }) {
         {/* ── Spacer ──────────────────────────────────────────── */}
         <Box sx={{ flex: 1 }} />
 
-        {/* ── Actions ─────────────────────────────────────────── */}
+        {/* ── Actions ──────────────────────────────────────────── */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+
+          {/* Nút quay về trang chọn bộ phận */}
+          <Tooltip title="Về trang chọn bộ phận">
+            <IconButton
+              size="small"
+              onClick={() => navigate('/')}
+              aria-label="Về trang chọn bộ phận"
+              sx={{
+                width: 34, height: 34,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: '8px',
+                color: 'text.secondary',
+                '&:hover': { borderColor: 'primary.main', color: 'primary.main', bgcolor: 'rgba(185,28,28,0.05)' },
+              }}
+            >
+              <ArrowBackRoundedIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Tooltip>
 
           {/* Print – The single primary action */}
           <Button
@@ -103,22 +128,24 @@ const TopBar = memo(function TopBar({ onPrint }) {
           </Button>
 
           {/* Avatar */}
-          <Avatar
-            sx={{
-              width: 32,
-              height: 32,
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              bgcolor: '#4F63D2',
-              cursor: 'pointer',
-              border: '2px solid',
-              borderColor: 'divider',
-              transition: 'all 150ms ease',
-              '&:hover': { borderColor: 'primary.main', transform: 'scale(1.05)' },
-            }}
-          >
-            HS
-          </Avatar>
+          <Tooltip title="Hữu Sang">
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                bgcolor: '#4F63D2',
+                cursor: 'pointer',
+                border: '2px solid',
+                borderColor: 'divider',
+                transition: 'all 150ms ease',
+                '&:hover': { borderColor: 'primary.main', transform: 'scale(1.05)' },
+              }}
+            >
+              HS
+            </Avatar>
+          </Tooltip>
         </Box>
       </Toolbar>
     </AppBar>

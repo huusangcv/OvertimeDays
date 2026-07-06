@@ -23,7 +23,8 @@ const FormInfoSection = memo(function FormInfoSection({
   setOtType,
   selectedCount,
 }) {
-  const pct = Math.round((selectedCount / MAX_ROWS) * 100);
+  // Tính số trang sẽ được tạo (đồng bộ với logic phân trang ở PreviewPanel)
+  const pageCount = selectedCount === 0 ? 1 : Math.ceil(selectedCount / MAX_ROWS);
 
   return (
     <Box sx={{ px: 2.5, py: 2 }}>
@@ -87,6 +88,30 @@ const FormInfoSection = memo(function FormInfoSection({
           </Select>
         </FormControl>
       </Box>
+
+      {/* Tóm tắt: số NV đã chọn và số trang sẽ in */}
+      {selectedCount > 0 && (
+        <Box
+          sx={{
+            mt: 2,
+            px: 1.5,
+            py: 1,
+            borderRadius: '8px',
+            backgroundColor: '#F0FDF4',
+            border: '1px solid #BBF7D0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography variant="caption" fontWeight={600} sx={{ color: '#15803D', fontSize: '0.75rem' }}>
+            ✓ {selectedCount} nhân viên
+          </Typography>
+          <Typography variant="caption" fontWeight={600} sx={{ color: '#15803D', fontSize: '0.75rem' }}>
+            {pageCount} trang
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 });
