@@ -49,13 +49,15 @@ const DocumentSheet = memo(function DocumentSheet({
         </td>
         <td className="d-sign"></td>
         <td className="d-note">
-          <input
-            type="text"
-            className="note-input"
-            value={noteValue}
-            onChange={(evt) => setNote(rowKey, evt.target.value)}
-            placeholder="Ghi chú…"
-          />
+          {e && (
+            <input
+              type="text"
+              className="note-input"
+              value={noteValue}
+              onChange={(evt) => setNote(rowKey, evt.target.value)}
+              placeholder="Ghi chú…"
+            />
+          )}
         </td>
       </tr>
     );
