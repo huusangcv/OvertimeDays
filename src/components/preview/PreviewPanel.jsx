@@ -48,6 +48,13 @@ const PreviewPanel = memo(function PreviewPanel({
   const [rotation, setRotation] = useState(0);
   const containerRef = useRef(null);
 
+  // ─── Ghi chú editable (chia sẻ giữa các trang) ─────────────────
+  // notes: { [rowKey]: string } – rowKey = "emp-<id>" hoặc "row-<stt>"
+  const [notes, setNotesMap] = useState({});
+  const setNote = useCallback((rowKey, value) => {
+    setNotesMap(prev => ({ ...prev, [rowKey]: value }));
+  }, []);
+
   // ─── Phân trang ──────────────────────────────────────────────
   // Tính toán lại chỉ khi danh sách nhân viên thay đổi.
   // Kết quả: mảng của mảng — mỗi phần tử là danh sách NV của 1 trang.
@@ -250,6 +257,9 @@ const PreviewPanel = memo(function PreviewPanel({
                     deptName={deptName}
                     otTimes={otTimes}
                     setEmployeeTime={setEmployeeTime}
+                    startIndex={pageIndex * MAX_ROWS}
+                    notes={notes}
+                    setNote={setNote}
                   />
                 </Box>
               </Box>

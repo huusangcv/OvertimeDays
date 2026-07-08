@@ -3,21 +3,36 @@ import React, { memo } from 'react';
 import { LOGO_B64, MAX_ROWS } from '../../constants';
 
 /**
- * DocumentSheet – Exact Excel replica table (unchanged logic)
+ * DocumentSheet – Exact Excel replica table
  * Props:
- *   selArr   : Employee[]
- *   isSun    : boolean
- *   dateStr  : string
+ *   selArr          : Employee[]
+ *   isSun           : boolean
+ *   dateStr         : string
  *   deptName        : string
  *   otTimes         : object
  *   setEmployeeTime : (id, time) => void
+ *   startIndex      : number  – STT bắt đầu (0-based offset); trang 1 = 0, trang 2 = MAX_ROWS, …
+ *   notes           : object  – { [rowKey]: string } ghi chú editable
+ *   setNote         : (rowKey, value) => void
  */
-const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, deptName, otTimes = {}, setEmployeeTime = () => { } }) {
+const DocumentSheet = memo(function DocumentSheet({
+  selArr, isSun, dateStr, deptName,
+  otTimes = {}, setEmployeeTime = () => {},
+  startIndex = 0,
+  notes = {}, setNote = () => {},
+}) {
   const dataRows = Array.from({ length: MAX_ROWS }).map((_, i) => {
     const e = selArr[i] || null;
+    // STT xuyên trang: trang 2 bắt đầu từ MAX_ROWS+1, v.v.
+    const stt = startIndex + i + 1;
+    // Key dùng cho notes: dùng id nếu có NV, dùng "row-<stt>" cho hàng trống
+    const rowKey = e ? `emp-${e.id}` : `row-${stt}`;
+    // Giá trị ghi chú mặc định: note của NV → isSun 'TG' → ''
+    const defaultNote = e ? (e.note || (isSun ? 'TG' : '')) : '';
+    const noteValue = notes[rowKey] !== undefined ? notes[rowKey] : defaultNote;
     return (
       <tr key={i} className="drow">
-        <td className="d-stt">{i + 1}</td>
+        <td className="d-stt">{stt}</td>
         <td className={`d-id ${e ? '' : 'd-empty'}`}>{e ? e.id : ''}</td>
         <td className={`d-name ${e ? '' : 'd-empty'}`}>{e ? e.name : ''}</td>
         <td className="d-role">{e ? e.role || 'CN' : ''}</td>
@@ -34,7 +49,13 @@ const DocumentSheet = memo(function DocumentSheet({ selArr, isSun, dateStr, dept
         </td>
         <td className="d-sign"></td>
         <td className="d-note">
-          {e ? (e.note || (isSun ? 'TG' : '')) : ''}
+          <input
+            type="text"
+            className="note-input"
+            value={noteValue}
+            onChange={(evt) => setNote(rowKey, evt.target.value)}
+            placeholder="Ghi chú…"
+          />
         </td>
       </tr>
     );
