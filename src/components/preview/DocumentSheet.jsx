@@ -32,7 +32,7 @@ const DocumentSheet = memo(function DocumentSheet({
     const noteValue = notes[rowKey] !== undefined ? notes[rowKey] : defaultNote;
     return (
       <tr key={i} className="drow">
-        <td className="d-stt">{stt}</td>
+        <td className="d-stt">{e ? stt : ''}</td>
         <td className={`d-id ${e ? '' : 'd-empty'}`}>{e ? e.id : ''}</td>
         <td className={`d-name ${e ? '' : 'd-empty'}`}>{e ? e.name : ''}</td>
         <td className="d-role">{e ? e.role || 'CN' : ''}</td>
