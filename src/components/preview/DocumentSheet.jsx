@@ -21,10 +21,10 @@ const DocumentSheet = memo(function DocumentSheet({
   dateStr,
   deptName,
   otTimes = {},
-  setEmployeeTime = () => {},
+  setEmployeeTime = () => { },
   startIndex = 0,
   notes = {},
-  setNote = () => {},
+  setNote = () => { },
 }) {
   const dataRows = Array.from({ length: MAX_ROWS }).map((_, i) => {
     const e = selArr[i] || null;
@@ -43,13 +43,31 @@ const DocumentSheet = memo(function DocumentSheet({
         <td className="d-role">{e ? e.role || "CN" : ""}</td>
         <td className="d-time">
           {e && (
-            <input
-              type="text"
+            <select
               className="time-input"
               value={otTimes[e.id] || ""}
               onChange={(evt) => setEmployeeTime(e.id, evt.target.value)}
-              placeholder="VD: 4h30 - 19h30"
-            />
+            >
+              <option value=""></option>
+              <option value="4h00 - 5h00">4h00 - 5h00</option>
+              <option value="4h00 - 5h30">4h00 - 5h30</option>
+              <option value="4h00 - 6h00">4h00 - 6h00</option>
+              <option value="4h00 - 6h30">4h00 - 6h30</option>
+              <option value="4h00 - 7h00">4h00 - 7h00</option>
+              <option value="4h00 - 7h30">4h00 - 7h30</option>
+              <option value="16h30 - 17h00">16h30 - 17h00</option>
+              <option value="16h30 - 17h30">16h30 - 17h30</option>
+              <option value="16h30 - 18h00">16h30 - 18h00</option>
+              <option value="16h30 - 18h30">16h30 - 18h30</option>
+              <option value="16h30 - 19h30">16h30 - 19h30</option>
+              <option value="16h30 - 20h00">16h30 - 20h00</option>
+              <option value="16h30 - 20h30">16h30 - 20h30</option>
+              <option value="16h30 - 21h00">16h30 - 21h00</option>
+              <option value="16h30 - 21h30">16h30 - 21h30</option>
+              <option value="16h30 - 22h00">16h30 - 22h00</option>
+              <option value="16h30 - 22h30">16h30 - 22h30</option>
+              <option value="16h30 - 23h00">16h30 - 23h00</option>
+            </select>
           )}
         </td>
         <td className="d-sign"></td>

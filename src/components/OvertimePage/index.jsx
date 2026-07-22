@@ -34,6 +34,7 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
     otDate, setOtDate,
     otType, setOtType,
     otTimes, setEmployeeTime,
+    notes, setNote,
     otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen,
     editingId,
@@ -128,6 +129,8 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
           onPrint={doPrint}
           otTimes={otTimes}
           setEmployeeTime={setEmployeeTime}
+          notes={notes}
+          setNote={setNote}
           onZoomChange={setZoom}
         />
       </AppShell>

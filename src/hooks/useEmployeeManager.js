@@ -20,6 +20,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const [otDate, setOtDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [otType, setOtType] = useState('TCA THƯỜNG');
   const [otTimes, setOtTimes] = useState({});
+  const [notes, setNotes] = useState({});
   const [otHistory, setOtHistory] = useState(() => historyService.getHistory(departmentId));
 
   // Modal state
@@ -68,9 +69,33 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     return selected.sort((a, b) => {
       const pA = ROLE_PRIORITY[a.role] || 5;
       const pB = ROLE_PRIORITY[b.role] || 5;
-      return pA - pB;
+      
+      if (pA !== pB) {
+        return pA - pB;
+      }
+      
+      // Nếu cùng chức vụ là Công Nhân (CN) thì sắp xếp theo thời gian tăng ca
+      const isAWorker = !a.role || a.role.toUpperCase() === 'CN';
+      const isBWorker = !b.role || b.role.toUpperCase() === 'CN';
+      
+      if (isAWorker && isBWorker) {
+        const timeA = otTimes[a.id] || '';
+        const timeB = otTimes[b.id] || '';
+        if (timeA !== timeB) {
+          return timeA.localeCompare(timeB);
+        }
+        
+        // Thêm sắp xếp theo ghi chú nếu thời gian giống nhau
+        const noteA = notes[`emp-${a.id}`] !== undefined ? notes[`emp-${a.id}`] : (a.note || '');
+        const noteB = notes[`emp-${b.id}`] !== undefined ? notes[`emp-${b.id}`] : (b.note || '');
+        if (noteA !== noteB) {
+          return noteA.localeCompare(noteB);
+        }
+      }
+      
+      return 0; // Giữ nguyên thứ tự nếu không phải CN hoặc thời gian/ghi chú giống nhau
     });
-  }, [employees, selectedIds]);
+  }, [employees, selectedIds, otTimes, notes]);
 
   // Handlers
   // Không giới hạn số lượng NV — phân trang tự động xử lý khi vượt MAX_ROWS
@@ -225,6 +250,10 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     setOtTimes(prev => ({ ...prev, [id]: time }));
   }, []);
 
+  const setNote = useCallback((rowKey, value) => {
+    setNotes(prev => ({ ...prev, [rowKey]: value }));
+  }, []);
+
   const loadHistory = useCallback((record) => {
     // Không dùng để load vào form sửa nữa, chức năng này được thay thế bằng xem read-only
     showToast('Bản ghi lịch sử ở chế độ chỉ đọc (Read-only)', 'info');
@@ -249,7 +278,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     employees, selectedIds, activeTab, setActiveTab,
     searchQuery, setSearchQuery,
     otDate, setOtDate, otType, setOtType,
-    otTimes, setEmployeeTime, otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
+    otTimes, setEmployeeTime, notes, setNote, otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen, editingId, modalData, setModalData,
     confirmOpen, deletingId,
     snackbar, closeSnackbar,

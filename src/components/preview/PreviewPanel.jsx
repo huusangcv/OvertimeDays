@@ -42,18 +42,12 @@ function splitIntoPages(employees, rowsPerPage) {
 const PreviewPanel = memo(function PreviewPanel({
   selArr, isSun, dateStr, deptName,
   otTimes, setEmployeeTime,
+  notes, setNote,
   onZoomChange,
 }) {
   const [zoom, setZoom] = useState(ZOOM_DEFAULT);
   const [rotation, setRotation] = useState(0);
   const containerRef = useRef(null);
-
-  // ─── Ghi chú editable (chia sẻ giữa các trang) ─────────────────
-  // notes: { [rowKey]: string } – rowKey = "emp-<id>" hoặc "row-<stt>"
-  const [notes, setNotesMap] = useState({});
-  const setNote = useCallback((rowKey, value) => {
-    setNotesMap(prev => ({ ...prev, [rowKey]: value }));
-  }, []);
 
   // ─── Phân trang ──────────────────────────────────────────────
   // Tính toán lại chỉ khi danh sách nhân viên thay đổi.

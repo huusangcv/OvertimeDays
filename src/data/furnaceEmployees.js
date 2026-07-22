@@ -38,4 +38,5 @@ export const furnaceEmployees = [
   { id: '3168', name: 'Nguyễn Văn Nhí', role: 'CN', note: 'K' },
   { id: '3266', name: 'Nguyễn Hữu Đức', role: 'NV', note: 'TG' },
   { id: '3279', name: 'Võ Thành Trung', role: 'CN', note: 'K' },
+  { id: '1843', name: 'Đào Công Danh', role: 'CN', note: 'TG' },
 ];
