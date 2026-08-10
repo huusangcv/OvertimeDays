@@ -122,8 +122,10 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
         next.delete(id);
       } else {
         next.add(id);
-        if (departmentId === 'furnace') {
-          const defaultTime = otShift === 'day' ? '15h30 - ' : '4h00 - ';
+        if (departmentId === 'furnace' || departmentId === 'pre-processing') {
+          const defaultTime = departmentId === 'furnace'
+            ? (otShift === 'day' ? '15h30 - ' : '4h00 - ')
+            : '16h30 - ';
           setOtTimes(times => {
             if (!times[id]) {
               return { ...times, [id]: defaultTime };
@@ -144,8 +146,10 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
         for (const emp of filteredEmployees) {
           next.add(emp.id);
         }
-        if (departmentId === 'furnace') {
-          const defaultTime = otShift === 'day' ? '15h30 - ' : '4h00 - ';
+        if (departmentId === 'furnace' || departmentId === 'pre-processing') {
+          const defaultTime = departmentId === 'furnace'
+            ? (otShift === 'day' ? '15h30 - ' : '4h00 - ')
+            : '16h30 - ';
           setOtTimes(times => {
              const newTimes = { ...times };
              for (const emp of filteredEmployees) {

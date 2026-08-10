@@ -49,8 +49,9 @@ const DocumentSheet = memo(function DocumentSheet({
               onChange={(evt) => setEmployeeTime(e.id, evt.target.value)}
             >
               <option value=""></option>
-              <option value="4h00 - ">4h00 -         </option>
-              <option value="15h30 - ">15h30 -       </option>
+              <option value="4h00 - ">4h00 - </option>
+              <option value="15h30 - ">15h30 - </option>
+              <option value="16h30 - ">16h30 - </option>
               <option value="4h00 - 5h00">4h00 - 5h00</option>
               <option value="4h00 - 5h30">4h00 - 5h30</option>
               <option value="4h00 - 6h00">4h00 - 6h00</option>
