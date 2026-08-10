@@ -413,11 +413,11 @@
   height: 100%;
   border: none;
   background: transparent;
-  text-align: center;
-  text-align-last: center;
+  text-align: left;
+  text-align-last: left;
   font-family: inherit;
   font-size: inherit;
-  padding: 0;
+  padding: 0 4px;
   outline: none;
   cursor: pointer;
 }

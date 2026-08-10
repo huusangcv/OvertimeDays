@@ -17,10 +17,13 @@ import { OT_TYPES, MAX_ROWS } from '../../constants';
  * Minimalist design without excessive colors
  */
 const FormInfoSection = memo(function FormInfoSection({
+  departmentId,
   otDate,
   setOtDate,
   otType,
   setOtType,
+  otShift,
+  setOtShift,
   selectedCount,
 }) {
   // Tính số trang sẽ được tạo (đồng bộ với logic phân trang ở PreviewPanel)
@@ -88,6 +91,41 @@ const FormInfoSection = memo(function FormInfoSection({
           </Select>
         </FormControl>
       </Box>
+
+      {/* OT Shift field (Only for Lò / furnace) */}
+      {departmentId === 'furnace' && (
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.75 }}>
+            <AccessTimeRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
+            <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+              Ca làm thêm
+            </Typography>
+          </Box>
+          <FormControl fullWidth size="small" variant="outlined">
+            <Select
+              value={otShift}
+              onChange={e => setOtShift(e.target.value)}
+              displayEmpty
+              aria-label="Ca làm thêm"
+              sx={{
+                borderRadius: '8px',
+                backgroundColor: '#F9FAFB',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#D1D5DB' },
+              }}
+            >
+              <MenuItem value="day" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                Ca ngày (15h30 - ...)
+              </MenuItem>
+              <MenuItem value="night" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                Ca đêm (4h00 - ...)
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      )}
 
       {/* Tóm tắt: số NV đã chọn và số trang sẽ in */}
       {/* {selectedCount > 0 && (

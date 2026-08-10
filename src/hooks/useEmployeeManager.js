@@ -19,6 +19,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const [searchQuery, setSearchQuery] = useState('');
   const [otDate, setOtDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [otType, setOtType] = useState('TCA THƯỜNG');
+  const [otShift, setOtShift] = useState('day'); // 'day' | 'night'
   const [otTimes, setOtTimes] = useState({});
   const [notes, setNotes] = useState({});
   const [otHistory, setOtHistory] = useState(() => historyService.getHistory(departmentId));
@@ -98,6 +99,21 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   }, [employees, selectedIds, otTimes, notes]);
 
   // Handlers
+
+  const handleShiftChange = useCallback((newShift) => {
+    setOtShift(newShift);
+    if (departmentId === 'furnace') {
+      const defaultTime = newShift === 'day' ? '15h30 - ' : '4h00 - ';
+      setOtTimes(times => {
+        const newTimes = { ...times };
+        for (const id of selectedIds) {
+          newTimes[id] = defaultTime;
+        }
+        return newTimes;
+      });
+    }
+  }, [departmentId, selectedIds]);
+
   // Không giới hạn số lượng NV — phân trang tự động xử lý khi vượt MAX_ROWS
   const toggleEmp = useCallback((id) => {
     setSelectedIds(prev => {
@@ -106,10 +122,19 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
         next.delete(id);
       } else {
         next.add(id);
+        if (departmentId === 'furnace') {
+          const defaultTime = otShift === 'day' ? '15h30 - ' : '4h00 - ';
+          setOtTimes(times => {
+            if (!times[id]) {
+              return { ...times, [id]: defaultTime };
+            }
+            return times;
+          });
+        }
       }
       return next;
     });
-  }, []);
+  }, [departmentId, otShift]);
 
   const toggleAll = useCallback((checked) => {
     setSelectedIds(prev => {
@@ -119,6 +144,18 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
         for (const emp of filteredEmployees) {
           next.add(emp.id);
         }
+        if (departmentId === 'furnace') {
+          const defaultTime = otShift === 'day' ? '15h30 - ' : '4h00 - ';
+          setOtTimes(times => {
+             const newTimes = { ...times };
+             for (const emp of filteredEmployees) {
+                if (!newTimes[emp.id]) {
+                  newTimes[emp.id] = defaultTime;
+                }
+             }
+             return newTimes;
+          });
+        }
       } else {
         for (const emp of filteredEmployees) {
           next.delete(emp.id);
@@ -126,7 +163,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
       }
       return next;
     });
-  }, [filteredEmployees]);
+  }, [filteredEmployees, departmentId, otShift]);
 
   const requestDelete = useCallback((id) => {
     setDeletingId(id);
@@ -278,6 +315,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     employees, selectedIds, activeTab, setActiveTab,
     searchQuery, setSearchQuery,
     otDate, setOtDate, otType, setOtType,
+    otShift, setOtShift: handleShiftChange,
     otTimes, setEmployeeTime, notes, setNote, otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen, editingId, modalData, setModalData,
     confirmOpen, deletingId,

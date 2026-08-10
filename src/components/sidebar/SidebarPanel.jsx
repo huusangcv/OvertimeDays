@@ -9,9 +9,11 @@ import EmployeeListSection from './EmployeeListSection';
  * Minimalist professional look
  */
 const SidebarPanel = memo(function SidebarPanel({
+  departmentId,
   // Form info props
   otDate, setOtDate,
   otType, setOtType,
+  otShift, setOtShift,
   selectedCount,
   // Employee list + History props
   activeTab, setActiveTab,
@@ -53,10 +55,13 @@ const SidebarPanel = memo(function SidebarPanel({
         }}
       >
         <FormInfoSection
+          departmentId={departmentId}
           otDate={otDate}
           setOtDate={setOtDate}
           otType={otType}
           setOtType={setOtType}
+          otShift={otShift}
+          setOtShift={setOtShift}
           selectedCount={selectedCount}
         />
       </Box>

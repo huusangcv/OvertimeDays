@@ -33,6 +33,7 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
     searchQuery, setSearchQuery,
     otDate, setOtDate,
     otType, setOtType,
+    otShift, setOtShift,
     otTimes, setEmployeeTime,
     notes, setNote,
     otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
@@ -95,11 +96,14 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
         }}
         sidebar={
           <SidebarPanel
+            departmentId={departmentId}
             // Form info
             otDate={otDate}
             setOtDate={setOtDate}
             otType={otType}
             setOtType={setOtType}
+            otShift={otShift}
+            setOtShift={setOtShift}
             selectedCount={selectedIds.size}
             // Employee list & History
             activeTab={activeTab}
