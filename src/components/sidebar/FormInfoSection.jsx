@@ -30,39 +30,76 @@ const FormInfoSection = memo(function FormInfoSection({
   const pageCount = selectedCount === 0 ? 1 : Math.ceil(selectedCount / MAX_ROWS);
 
   return (
-    <Box sx={{ px: 2.5, py: 2 }}>
-
-      {/* Date field */}
-      <Box sx={{ mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.75 }}>
-          <CalendarMonthRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
-          <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-            Ngày tăng ca
-          </Typography>
+    <Box sx={{ px: 2, py: 1.5 }}>
+      {/* Row 1: Date & Shift (if furnace) */}
+      <Box sx={{ display: 'flex', gap: 1.5, mb: 1.25 }}>
+        {/* Date field */}
+        <Box sx={{ flex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+            <CalendarMonthRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
+            <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+              Ngày tăng ca
+            </Typography>
+          </Box>
+          <TextField
+            type="date"
+            value={otDate}
+            onChange={e => setOtDate(e.target.value)}
+            size="small"
+            fullWidth
+            slotProps={{ input: { 'aria-label': 'Ngày tăng ca' } }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                backgroundColor: '#F9FAFB',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                '& fieldset': { borderColor: '#E5E7EB' },
+                '&:hover fieldset': { borderColor: '#D1D5DB' },
+              },
+            }}
+          />
         </Box>
-        <TextField
-          type="date"
-          value={otDate}
-          onChange={e => setOtDate(e.target.value)}
-          size="small"
-          fullWidth
-          slotProps={{ input: { 'aria-label': 'Ngày tăng ca' } }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px',
-              backgroundColor: '#F9FAFB',
-              fontSize: '0.875rem',
-              fontWeight: 500,
-              '& fieldset': { borderColor: '#E5E7EB' },
-              '&:hover fieldset': { borderColor: '#D1D5DB' },
-            },
-          }}
-        />
+
+        {/* OT Shift field (Only for Lò / furnace) */}
+        {departmentId === 'furnace' && (
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+              <AccessTimeRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
+              <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                Ca làm thêm
+              </Typography>
+            </Box>
+            <FormControl fullWidth size="small" variant="outlined">
+              <Select
+                value={otShift}
+                onChange={e => setOtShift(e.target.value)}
+                displayEmpty
+                aria-label="Ca làm thêm"
+                sx={{
+                  borderRadius: '8px',
+                  backgroundColor: '#F9FAFB',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#D1D5DB' },
+                }}
+              >
+                <MenuItem value="day" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                  Ca ngày
+                </MenuItem>
+                <MenuItem value="night" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                  Ca đêm
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        )}
       </Box>
 
       {/* OT Type field */}
       <Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.75 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
           <AccessTimeRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
           <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
             Loại tăng ca
@@ -91,41 +128,6 @@ const FormInfoSection = memo(function FormInfoSection({
           </Select>
         </FormControl>
       </Box>
-
-      {/* OT Shift field (Only for Lò / furnace) */}
-      {departmentId === 'furnace' && (
-        <Box sx={{ mt: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.75 }}>
-            <AccessTimeRoundedIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
-            <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-              Ca làm thêm
-            </Typography>
-          </Box>
-          <FormControl fullWidth size="small" variant="outlined">
-            <Select
-              value={otShift}
-              onChange={e => setOtShift(e.target.value)}
-              displayEmpty
-              aria-label="Ca làm thêm"
-              sx={{
-                borderRadius: '8px',
-                backgroundColor: '#F9FAFB',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#D1D5DB' },
-              }}
-            >
-              <MenuItem value="day" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                Ca ngày (15h30 - ...)
-              </MenuItem>
-              <MenuItem value="night" sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                Ca đêm (4h00 - ...)
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      )}
 
       {/* Tóm tắt: số NV đã chọn và số trang sẽ in */}
       {/* {selectedCount > 0 && (
