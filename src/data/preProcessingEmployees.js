@@ -17,9 +17,8 @@ export const preProcessingEmployees = [
   { id: "3274", name: "Châu Văn Điền", role: "CN", note: "" },
   { id: "3242", name: "Nguyễn Văn Rớt", role: "CN", note: "" },
   { id: "1729", name: "Phạm Hoàng Gập", role: "CN", note: "" },
-  { id: "2973", name: "Phạm Văn Nầy", role: "CN", note: "" },
+  { id: "3376", name: "Lê Cọp Em", role: "CN", note: "" },
   { id: "2787", name: "Nguyễn Văn Hậu", role: "CN", note: "" },
-  { id: "3149", name: "Nguyễn Minh Hải", role: "CN", note: "" },
   { id: "0554", name: "Trần Công Vương", role: "CN", note: "" },
   { id: "3176", name: "Nguyễn Văn Tiền", role: "CN", note: "" },
 ];

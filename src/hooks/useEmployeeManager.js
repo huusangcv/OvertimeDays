@@ -70,22 +70,22 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     return selected.sort((a, b) => {
       const pA = ROLE_PRIORITY[a.role] || 5;
       const pB = ROLE_PRIORITY[b.role] || 5;
-      
+
       if (pA !== pB) {
         return pA - pB;
       }
-      
+
       // Nếu cùng chức vụ là Công Nhân (CN) thì sắp xếp theo thời gian tăng ca
       const isAWorker = !a.role || a.role.toUpperCase() === 'CN';
       const isBWorker = !b.role || b.role.toUpperCase() === 'CN';
-      
+
       if (isAWorker && isBWorker) {
         const timeA = otTimes[a.id] || '';
         const timeB = otTimes[b.id] || '';
         if (timeA !== timeB) {
           return timeA.localeCompare(timeB);
         }
-        
+
         // Thêm sắp xếp theo ghi chú nếu thời gian giống nhau
         const noteA = notes[`emp-${a.id}`] !== undefined ? notes[`emp-${a.id}`] : (a.note || '');
         const noteB = notes[`emp-${b.id}`] !== undefined ? notes[`emp-${b.id}`] : (b.note || '');
@@ -93,7 +93,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
           return noteA.localeCompare(noteB);
         }
       }
-      
+
       return 0; // Giữ nguyên thứ tự nếu không phải CN hoặc thời gian/ghi chú giống nhau
     });
   }, [employees, selectedIds, otTimes, notes]);
@@ -151,13 +151,13 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
             ? (otShift === 'day' ? '15h30 - ' : '4h00 - ')
             : '16h30 - ';
           setOtTimes(times => {
-             const newTimes = { ...times };
-             for (const emp of filteredEmployees) {
-                if (!newTimes[emp.id]) {
-                  newTimes[emp.id] = defaultTime;
-                }
-             }
-             return newTimes;
+            const newTimes = { ...times };
+            for (const emp of filteredEmployees) {
+              if (!newTimes[emp.id]) {
+                newTimes[emp.id] = defaultTime;
+              }
+            }
+            return newTimes;
           });
         }
       } else {
