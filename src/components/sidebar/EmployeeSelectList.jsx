@@ -25,6 +25,7 @@ const EmployeeSelectList = memo(function EmployeeSelectList({
   onSearchChange,
   onToggle,
   onToggleAll,
+  onAdd
 }) {
   const allChecked =
     filteredEmployees.length > 0 && filteredEmployees.every(e => selectedIds.has(e.id));
@@ -39,7 +40,7 @@ const EmployeeSelectList = memo(function EmployeeSelectList({
     [onToggleAll, anyChecked],
   );
 
-  const isEmpty  = filteredEmployees.length === 0;
+  const isEmpty = filteredEmployees.length === 0;
   const isSearch = searchQuery.length > 0 && isEmpty;
 
   return (
@@ -96,7 +97,7 @@ const EmployeeSelectList = memo(function EmployeeSelectList({
         }}
       >
         {isEmpty ? (
-          <EmptyState variant={isSearch ? 'search' : 'empty'} />
+          <EmptyState variant={isSearch ? 'search' : 'empty'} onAction={onAdd} />
         ) : (
           filteredEmployees.map(emp => (
             <EmployeeSelectRow

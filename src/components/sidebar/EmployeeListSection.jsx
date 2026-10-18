@@ -121,6 +121,7 @@ const EmployeeListSection = memo(function EmployeeListSection({
           onSearchChange={onSearchChange}
           onToggle={onToggle}
           onToggleAll={onToggleAll}
+          onAdd={onAdd}
         />
       )}
       {activeTab === 'manage' && (
