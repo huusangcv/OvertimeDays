@@ -21,8 +21,11 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 const ROLE_OPTIONS = [
   { value: 'CN', label: 'CN – Công nhân' },
   { value: 'NV', label: 'NV – Nhân viên' },
+  { value: 'CT', label: 'CT – Ca trưởng' },
+  { value: 'TP', label: 'TT – Tổ phó' },
   { value: 'TT', label: 'TT – Tổ trưởng' },
-  { value: 'CT', label: 'CT – Ca trưởng / Tổ phó' },
+  { value: 'PK', label: 'PK - Phó Khoa' },
+  { value: 'KT', label: 'KT - Khoa Trưởng' },
 ];
 
 /**
