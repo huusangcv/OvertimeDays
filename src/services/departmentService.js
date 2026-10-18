@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../lib/firebase';
 
+
 const DEPARTMENTS_COL = 'departments';
 
 export const DEFAULT_DEPARTMENTS = [
@@ -25,8 +26,8 @@ export const DEFAULT_DEPARTMENTS = [
   { id: 'to-ky-thuat', code: 'TKT', name: 'Tổ Kỹ Thuật', path: '/dept/to-ky-thuat', description: 'Bảo trì, sửa chữa và hỗ trợ kỹ thuật thiết bị.', icon: 'Wrench', accentColor: '#4F46E5', accentBg: 'rgba(79, 70, 229, 0.08)', accentBorder: 'rgba(79, 70, 229, 0.25)', active: true, sortOrder: 7 },
   { id: 'ke-toan', code: 'KT', name: 'Kế Toán', path: '/dept/ke-toan', description: 'Quản lý kế toán, tài chính và chi phí.', icon: 'Calculator', accentColor: '#059669', accentBg: 'rgba(5, 150, 105, 0.08)', accentBorder: 'rgba(5, 150, 105, 0.25)', active: true, sortOrder: 8 },
   { id: 'taro', code: 'TARO', name: 'Taro', path: '/dept/taro', description: 'Gia công lỗ ren và taro chi tiết.', icon: 'Drill', accentColor: '#D97706', accentBg: 'rgba(217, 119, 6, 0.08)', accentBorder: 'rgba(217, 119, 6, 0.25)', active: true, sortOrder: 9 },
-  { id: 'van-cau', code: 'VC', name: 'Văn Cầu', path: '/dept/van-cau', description: 'Gia công hoặc xử lý sản phẩm van cầu theo nhiệm vụ thực tế của bộ phận.', icon: 'Gauge', accentColor: '#0891B2', accentBg: 'rgba(8, 145, 178, 0.08)', accentBorder: 'rgba(8, 145, 178, 0.25)', active: true, sortOrder: 10 },
   { id: 'chat-luong', code: 'QC', name: 'Chất Lượng', path: '/dept/chat-luong', description: 'Kiểm tra và kiểm soát chất lượng sản phẩm.', icon: 'ShieldCheck', accentColor: '#16A34A', accentBg: 'rgba(22, 163, 74, 0.08)', accentBorder: 'rgba(22, 163, 74, 0.25)', active: true, sortOrder: 11 },
+  { id: 'van-cau', code: 'VC', name: 'Van Cầu', path: '/dept/van-cau', description: 'Gia công hoặc xử lý sản phẩm van cầu theo nhiệm vụ thực tế của bộ phận.', icon: 'Gauge', accentColor: '#0891B2', accentBg: 'rgba(8, 145, 178, 0.08)', accentBorder: 'rgba(8, 145, 178, 0.25)', active: true, sortOrder: 10 },
   { id: 'ho-tro-san-xuat', code: 'HTSX', name: 'Hỗ Trợ Sản Xuất', path: '/dept/ho-tro-san-xuat', description: 'Hỗ trợ vật tư và hoạt động sản xuất.', icon: 'HandHelping', accentColor: '#6366F1', accentBg: 'rgba(99, 102, 241, 0.08)', accentBorder: 'rgba(99, 102, 241, 0.25)', active: true, sortOrder: 12 },
   { id: 'cong-trinh', code: 'CT', name: 'Công Trình', path: '/dept/cong-trinh', description: 'Thi công, sửa chữa và xây dựng.', icon: 'HardHat', accentColor: '#B45309', accentBg: 'rgba(180, 83, 9, 0.08)', accentBorder: 'rgba(180, 83, 9, 0.25)', active: true, sortOrder: 13 },
   { id: 'furnace', code: 'LO', name: 'Lò', path: '/furnace', description: 'Nấu chảy hợp kim và rót kim loại.', icon: 'Flame', accentColor: '#DC2626', accentBg: 'rgba(220, 38, 38, 0.08)', accentBorder: 'rgba(220, 38, 38, 0.25)', active: true, sortOrder: 14 },
