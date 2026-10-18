@@ -220,9 +220,6 @@ export default function LandingPage() {
       <main className="landing-container">
         {/* Header */}
         <header className="landing-header">
-          <div className="landing-header-meta">
-            {totalGroups} nhóm · {totalDepts} bộ phận
-          </div>
           <h1 className="landing-header-title">
             HỆ THỐNG ĐĂNG KÝ TĂNG CA
           </h1>
@@ -338,10 +335,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="landing-footer">
-          <span>Kingdom Vietnam · Hệ thống quản lý tăng ca nội bộ</span>
-          <a href="/admin/login" className="landing-admin-link">
-            Quản trị hệ thống
-          </a>
+          <span>© 2026 Kingdom Vietnam. Powered by Seedu.</span>
         </footer>
       </main>
     </div>
