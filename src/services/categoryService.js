@@ -19,10 +19,12 @@ export const DEFAULT_CATEGORIES = [
   { id: 'ot-chunhat', type: 'ot_type', code: 'CHU NHAT', label: 'Chu Nhat', name: 'Chu Nhat', active: true, sortOrder: 2 },
   { id: 'shift-day', type: 'shift', code: 'day', label: 'Ca Ngay (7h30 - 16h30)', name: 'Ca Ngay', active: true, sortOrder: 1 },
   { id: 'shift-night', type: 'shift', code: 'night', label: 'Ca Dem (19h30 - 4h00)', name: 'Ca Dem', active: true, sortOrder: 2 },
-  { id: 'role-tt', type: 'role', code: 'TT', label: 'To truong', name: 'To truong', active: true, sortOrder: 1 },
-  { id: 'role-ct', type: 'role', code: 'CT', label: 'Ca truong', name: 'Ca truong', active: true, sortOrder: 2 },
-  { id: 'role-nv', type: 'role', code: 'NV', label: 'Nhan vien', name: 'Nhan vien', active: true, sortOrder: 3 },
-  { id: 'role-cn', type: 'role', code: 'CN', label: 'Cong nhan', name: 'Cong nhan', active: true, sortOrder: 4 },
+  { id: 'role-cn', type: 'role', code: 'CN', label: 'Cong nhan', name: 'Cong nhan', active: true, sortOrder: 1 },
+  { id: 'role-nv', type: 'role', code: 'NV', label: 'Nhan vien', name: 'Nhan vien', active: true, sortOrder: 2 },
+  { id: 'role-tp', type: 'role', code: 'TP', label: 'Tổ trưởng', name: 'Tổ trưởng', active: true, sortOrder: 3 },
+  { id: 'role-ct', type: 'role', code: 'CT', label: 'Ca trưởng', name: 'Ca trưởng', active: true, sortOrder: 4 },
+  { id: 'role-pk', type: 'role', code: 'PK', label: 'Phó khoa', name: 'Phó khoa', active: true, sortOrder: 5 },
+  { id: 'role-kt', type: 'role', code: 'KT', label: 'Khoa trưởng', name: 'Khoa trưởng', active: true, sortOrder: 6 },
 ];
 
 /**

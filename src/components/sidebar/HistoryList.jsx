@@ -38,14 +38,14 @@ const HistoryList = memo(function HistoryList({
     <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
       {/* Header section with Clear All */}
       <Box sx={{ px: 2, pt: 2, pb: 1, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
+        {/* <Button
           size="small"
           color="error"
           onClick={onClearHistory}
           sx={{ fontSize: '0.75rem', textTransform: 'none', fontWeight: 600 }}
         >
           Xóa tất cả
-        </Button>
+        </Button> */}
       </Box>
 
       <Box sx={{ px: 2, pb: 2, display: 'flex', flexDirection: 'column', gap: 1.25 }}>
@@ -94,7 +94,7 @@ const HistoryList = memo(function HistoryList({
                 </Box>
               </Box>
             </Box>
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
               <Typography variant="caption" sx={{ color: '#9CA3AF', fontSize: '0.6875rem' }}>
                 Lưu lúc: {new Date(record.createdAt || record.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
@@ -102,23 +102,23 @@ const HistoryList = memo(function HistoryList({
 
               <Box className="history-actions" sx={{ display: 'flex', gap: 0.5, opacity: { xs: 1, sm: 0 }, transition: 'opacity 150ms ease' }}>
                 <Tooltip title="Xem bản in">
-                  <IconButton 
-                    size="small" 
+                  <IconButton
+                    size="small"
                     onClick={(e) => { e.stopPropagation(); onViewHistory(record); }}
                     sx={{ width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'primary.main', bgcolor: 'rgba(185,28,28,0.08)' } }}
                   >
                     <VisibilityRoundedIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Xóa">
-                  <IconButton 
-                    size="small" 
+                {/* <Tooltip title="Xóa">
+                  <IconButton
+                    size="small"
                     onClick={(e) => { e.stopPropagation(); onDeleteHistory(record.id); }}
                     sx={{ width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'error.main', bgcolor: 'rgba(220,38,38,0.08)' } }}
                   >
                     <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
               </Box>
             </Box>
           </Paper>

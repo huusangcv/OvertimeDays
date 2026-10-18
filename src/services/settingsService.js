@@ -11,7 +11,7 @@ const SETTINGS_DOC = 'systemSettings/general';
 
 export const DEFAULT_SETTINGS = {
   companyName: 'CÔNG TY TNHH THIẾT BỊ KIỂM SOÁT DÒNG CHẢY KINGDOM VIỆT NAM',
-  companySubName: '越南鐵王流體控制設備責任有限公司',
+  companySubName: 'VIETNAM KINGDOM FLUID CONTROL EQUIPMENT CO., LTD',
   maxRowsPerPage: 19,
   defaultNormalTime: '16:30 - ',
   defaultSundayTime: '7:30 - 16:30',
