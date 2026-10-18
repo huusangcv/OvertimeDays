@@ -10,14 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/inter": "^5.2.8",
     "@mui/icons-material": "^9.2.0",
     "@mui/material": "^9.2.0",
+    "firebase": "^13.0.0",
+    "lucide-react": "^1.59.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "firebase-admin": "^13.1.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

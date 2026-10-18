@@ -1,18 +1,64 @@
 // src/services/historyService.js
-// Quản lý lịch sử in biểu tăng ca bằng LocalStorage
+// Lịch sử in biểu tăng ca — Firestore (ưu tiên) + LocalStorage (fallback)
+
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  writeBatch,
+} from 'firebase/firestore';
+import { db, isFirebaseConfigured } from '../lib/firebase';
 
 const HISTORY_KEY = 'overtime-history';
+
+function historyCollection(departmentId) {
+  return collection(db, 'departments', departmentId, 'overtimeHistory');
+}
+
+function getRawHistoryLocal() {
+  try {
+    const data = localStorage.getItem(HISTORY_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Lỗi khi đọc lịch sử từ LocalStorage:', error);
+    return [];
+  }
+}
+
+function saveRawHistoryLocal(history) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
 
 /**
  * Lưu 1 bản ghi vào lịch sử
  * @param {Object} snapshotData
  */
-export function saveHistory(snapshotData) {
+export async function saveHistory(snapshotData) {
+  if (isFirebaseConfigured && db) {
+    try {
+      const { departmentId, id } = snapshotData;
+      if (!departmentId || !id) {
+        throw new Error('Thiếu departmentId hoặc id');
+      }
+      await setDoc(doc(historyCollection(departmentId), String(id)), {
+        ...snapshotData,
+        createdAt: snapshotData.createdAt || new Date().toISOString(),
+      });
+      return true;
+    } catch (error) {
+      console.error('Lỗi khi lưu lịch sử Firestore:', error);
+      return false;
+    }
+  }
+
   try {
-    const history = getRawHistory();
-    // Thêm vào đầu mảng (mới nhất lên trên)
+    const history = getRawHistoryLocal();
     const newHistory = [snapshotData, ...history];
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
+    saveRawHistoryLocal(newHistory);
     return true;
   } catch (error) {
     console.error('Lỗi khi lưu lịch sử:', error);
@@ -21,24 +67,46 @@ export function saveHistory(snapshotData) {
 }
 
 /**
- * Lấy lịch sử của 1 bộ phận (đã lọc theo departmentId)
+ * Lấy lịch sử của 1 bộ phận
  * @param {string} departmentId
- * @returns {Array} Mảng các bản ghi
+ * @returns {Promise<Array>}
  */
-export function getHistory(departmentId) {
-  const history = getRawHistory();
+export async function getHistory(departmentId) {
+  if (isFirebaseConfigured && db) {
+    try {
+      const q = query(historyCollection(departmentId), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    } catch (error) {
+      console.error('Lỗi khi đọc lịch sử Firestore:', error);
+      return [];
+    }
+  }
+
+  const history = getRawHistoryLocal();
   return history.filter((item) => item.departmentId === departmentId);
 }
 
 /**
  * Xóa 1 bản ghi lịch sử
  * @param {string} id
+ * @param {string} [departmentId]
  */
-export function deleteHistory(id) {
+export async function deleteHistory(id, departmentId) {
+  if (isFirebaseConfigured && db && departmentId) {
+    try {
+      await deleteDoc(doc(historyCollection(departmentId), String(id)));
+      return true;
+    } catch (error) {
+      console.error('Lỗi khi xóa lịch sử Firestore:', error);
+      return false;
+    }
+  }
+
   try {
-    const history = getRawHistory();
+    const history = getRawHistoryLocal();
     const newHistory = history.filter((item) => item.id !== id);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
+    saveRawHistoryLocal(newHistory);
     return true;
   } catch (error) {
     console.error('Lỗi khi xóa lịch sử:', error);
@@ -50,12 +118,26 @@ export function deleteHistory(id) {
  * Xóa toàn bộ lịch sử của 1 bộ phận
  * @param {string} departmentId
  */
-export function clearHistory(departmentId) {
+export async function clearHistory(departmentId) {
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDocs(historyCollection(departmentId));
+      if (snap.empty) return true;
+
+      const batch = writeBatch(db);
+      snap.docs.forEach((d) => batch.delete(d.ref));
+      await batch.commit();
+      return true;
+    } catch (error) {
+      console.error('Lỗi khi xóa tất cả lịch sử Firestore:', error);
+      return false;
+    }
+  }
+
   try {
-    const history = getRawHistory();
-    // Giữ lại những bản ghi KHÔNG thuộc bộ phận này
+    const history = getRawHistoryLocal();
     const newHistory = history.filter((item) => item.departmentId !== departmentId);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
+    saveRawHistoryLocal(newHistory);
     return true;
   } catch (error) {
     console.error('Lỗi khi xóa tất cả lịch sử:', error);
@@ -63,15 +145,4 @@ export function clearHistory(departmentId) {
   }
 }
 
-/**
- * Hàm nội bộ: Lấy toàn bộ lịch sử từ LocalStorage
- */
-function getRawHistory() {
-  try {
-    const data = localStorage.getItem(HISTORY_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch (error) {
-    console.error('Lỗi khi đọc lịch sử từ LocalStorage:', error);
-    return [];
-  }
-}
+export { isFirebaseConfigured };

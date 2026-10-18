@@ -1,0 +1,426 @@
+/* ============================================================
+   Landing.css – Giao diện chọn bộ phận dạng TAB
+   Phong cách công cụ nội bộ nhà máy: gọn, chắc, dễ đọc, góc vuông, chia Tab
+   ============================================================ */
+
+:root {
+  --bg-page: #ECEDEE;
+  --text-ink: #16181B;
+  --text-muted: #4A5057;
+  --text-mono: #5B6168;
+  --border-group: #B9BDC2;
+  --border-btn: #C9CCD0;
+  --border-row: #DCDEE1;
+  --border-panel: #D3D6DA;
+  --bg-panel: #F7F7F6;
+  --accent: #B4400E;
+}
+
+/* ---------- Toàn trang ---------- */
+.landing-page {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-ink);
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 40px 32px 56px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.landing-container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+.landing-header {
+  margin-bottom: 28px;
+  animation: landingFadeUp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.landing-header-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.landing-header-title {
+  font-family: 'IBM Plex Sans Condensed', sans-serif;
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--text-ink);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px 0;
+  text-align: left;
+}
+
+.landing-header-sub {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 16px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ---------- Thanh Tab (Tab Bar) ---------- */
+.landing-tab-bar {
+  display: flex;
+  overflow-x: auto;
+  box-shadow: inset 0 -2px 0 var(--text-ink);
+  gap: 2px;
+  margin-bottom: 36px;
+  scrollbar-width: none;
+  animation: landingFadeUp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s both;
+}
+
+.landing-tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.landing-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 0;
+  user-select: none;
+  outline: none;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.landing-tab-btn:hover {
+  color: var(--text-ink);
+  background-color: rgba(255, 255, 255, 0.55);
+}
+
+.landing-tab-btn[aria-selected="true"] {
+  color: var(--text-ink);
+  border-bottom-color: var(--accent);
+  background-color: transparent;
+}
+
+.landing-tab-btn:focus-visible {
+  outline: 2px solid var(--text-ink);
+  outline-offset: -2px;
+}
+
+.landing-tab-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mono);
+}
+
+.landing-tab-btn[aria-selected="true"] .landing-tab-count {
+  color: var(--accent);
+}
+
+/* ---------- Tab Panel: Layout 2 cột ---------- */
+.landing-tabpanel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px 48px;
+  animation: tabSwitchFade 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Cột trái */
+.landing-left-col {
+  flex: 1 1 240px;
+  max-width: 300px;
+}
+
+.landing-group-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.landing-group-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-ink);
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+.landing-group-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0 0 16px 0;
+}
+
+.landing-group-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-mono);
+}
+
+/* Cột phải: Panel danh sách */
+.landing-right-col {
+  flex: 999 1 480px;
+  min-width: 0;
+}
+
+.landing-panel {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-panel);
+  border-top: 2px solid var(--text-ink);
+  box-shadow: 0 1px 2px rgba(22, 24, 27, 0.05), 0 8px 24px -12px rgba(22, 24, 27, 0.12);
+  border-radius: 0;
+}
+
+/* ---------- Dòng bộ phận (Thẻ <a> bấm toàn dòng) ---------- */
+.landing-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-row);
+  text-decoration: none;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 0;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.landing-row:last-child {
+  border-bottom: none;
+}
+
+.landing-row:hover,
+.landing-row:focus-visible {
+  background-color: #FFFFFF;
+}
+
+.landing-row:focus-visible {
+  outline: 2px solid var(--text-ink);
+  outline-offset: -2px;
+}
+
+.landing-row:active {
+  filter: brightness(0.97);
+}
+
+/* 1) Mã mono 13px */
+.landing-dept-code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mono);
+  width: 32px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.landing-row:hover .landing-dept-code,
+.landing-row:focus-visible .landing-dept-code {
+  color: var(--accent);
+}
+
+/* 2) Khối chữ (Tên 18px/600 + Mô tả 14px) */
+.landing-dept-info {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.landing-dept-name-wrap {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.landing-dept-name {
+  display: inline-block;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-ink);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  background: linear-gradient(var(--accent), var(--accent)) bottom left / 0 2px no-repeat;
+  transition: background-size 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  padding-bottom: 1px;
+}
+
+.landing-row:hover .landing-dept-name,
+.landing-row:focus-visible .landing-dept-name {
+  background-size: 100% 2px;
+}
+
+.landing-dept-desc {
+  display: block;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* 3) Nút giả Vào hệ thống + mũi tên SVG 16px */
+.landing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 0;
+  border: 1px solid var(--border-btn);
+  background-color: transparent;
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  user-select: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.landing-btn-arrow {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.landing-row:hover .landing-btn,
+.landing-row:focus-visible .landing-btn {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.landing-row:hover .landing-btn-arrow,
+.landing-row:focus-visible .landing-btn-arrow {
+  transform: translateX(3px);
+}
+
+/* ---------- Footer ---------- */
+.landing-footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-group);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--text-mono);
+}
+
+.landing-admin-link {
+  color: var(--text-mono);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.landing-admin-link:hover {
+  color: var(--text-ink);
+  text-decoration: underline;
+}
+
+/* ---------- Keyframe Animations ---------- */
+@keyframes landingFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tabSwitchFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Tắt chuyển động nếu người dùng cài đặt ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Responsive dưới 700px ---------- */
+@media (max-width: 700px) {
+  .landing-page {
+    padding: 24px 16px 40px;
+  }
+
+  .landing-header-title {
+    font-size: 32px;
+  }
+
+  .landing-tab-bar {
+    margin-bottom: 24px;
+  }
+
+  .landing-tab-btn {
+    padding: 12px 16px 10px;
+    font-size: 13px;
+  }
+
+  .landing-tabpanel {
+    gap: 16px;
+  }
+
+  .landing-left-col {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .landing-group-title {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .landing-row {
+    padding: 16px;
+  }
+
+  .landing-btn {
+    width: 100%;
+    margin-top: 4px;
+    justify-content: center;
+  }
+}

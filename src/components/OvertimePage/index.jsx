@@ -6,9 +6,13 @@
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 import '../../index.css';
 import { useEmployeeManager } from '../../hooks/useEmployeeManager';
+import { useRecordVisit } from '../../hooks/useRecordVisit';
 
 import AppShell from '../layout/AppShell';
 import SidebarPanel from '../sidebar/SidebarPanel';
@@ -20,11 +24,14 @@ import HistoryPreviewDialog from '../dialogs/HistoryPreviewDialog';
 /**
  * OvertimePage – Trang đăng ký tăng ca dùng chung cho mọi bộ phận.
  * Props:
- *   departmentId       : string   — ID dùng để scope localStorage
+ *   departmentId       : string   — ID dùng để scope localStorage & Firestore
  *   departmentName     : string   — Tên hiển thị trên TopBar và PDF
  *   initialEmployeeList: Employee[] — Danh sách nhân viên của bộ phận
  */
 function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
+  // Ghi nhận lượt truy cập (1 lần/lượt vào trang, chống trùng Strict Mode)
+  useRecordVisit(departmentId, departmentName);
+
   const {
     // state
     employees,
@@ -89,7 +96,8 @@ function OvertimePage({ departmentId, departmentName, initialEmployeeList }) {
           onPrint: doPrint,
           onReset: resetSelection,
           selectedCount: selectedIds.size,
-          departmentName, // Truyền tên bộ phận vào TopBar
+          departmentName,
+          departmentId,
         }}
         statusBarProps={{
           zoom: zoom,

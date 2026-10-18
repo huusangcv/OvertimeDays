@@ -4,53 +4,53 @@ import { createTheme, alpha } from '@mui/material/styles';
 // ─── Design Tokens ───────────────────────────────────────────────────────────
 const COLORS = {
   // Primary – Kingdom Red (softer, 20% less aggressive)
-  primary:   '#B91C1C',
-  primaryHov:'#991B1B',
+  primary: '#B91C1C',
+  primaryHov: '#991B1B',
   primaryBg: 'rgba(185,28,28,0.05)',
   primaryBd: 'rgba(185,28,28,0.25)',
 
   // Neutrals
-  bg:        '#F4F5F7',   // canvas
-  surface:   '#FFFFFF',   // card/paper
-  border:    '#E4E7EB',   // default border
+  bg: '#F4F5F7',   // canvas
+  surface: '#FFFFFF',   // card/paper
+  border: '#E4E7EB',   // default border
   borderHov: '#C9CDD3',   // hover border
-  muted:     '#F8F9FB',   // subtle bg for inputs
+  muted: '#F8F9FB',   // subtle bg for inputs
 
   // Text
-  text1:     '#111827',   // headings
-  text2:     '#374151',   // body
-  text3:     '#6B7280',   // secondary / captions
+  text1: '#111827',   // headings
+  text2: '#374151',   // body
+  text3: '#6B7280',   // secondary / captions
 
   // Status
-  success:   '#16A34A',
-  warning:   '#D97706',
-  error:     '#DC2626',
+  success: '#16A34A',
+  warning: '#D97706',
+  error: '#DC2626',
 
   // Divider
-  divider:   '#E4E7EB',
+  divider: '#E4E7EB',
 };
 
 const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main:         COLORS.primary,
-      light:        '#EF4444',
-      dark:         COLORS.primaryHov,
+      main: COLORS.primary,
+      light: '#EF4444',
+      dark: COLORS.primaryHov,
       contrastText: '#FFFFFF',
     },
     secondary: { main: '#6B7280' },
     background: {
       default: COLORS.bg,
-      paper:   COLORS.surface,
+      paper: COLORS.surface,
     },
     text: {
-      primary:   COLORS.text2,
+      primary: COLORS.text2,
       secondary: COLORS.text3,
     },
     success: { main: COLORS.success },
     warning: { main: COLORS.warning },
-    error:   { main: COLORS.error },
+    error: { main: COLORS.error },
     divider: COLORS.divider,
   },
 
@@ -115,8 +115,8 @@ const theme = createTheme({
           color: COLORS.text2,
           fontSize: '0.875rem',
           lineHeight: 1.6,
-          '-webkit-font-smoothing': 'antialiased',
-          '-moz-osx-font-smoothing': 'grayscale',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
         },
         '*': {
           scrollbarWidth: 'thin',

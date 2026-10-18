@@ -2,6 +2,8 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { MAX_ROWS } from '../constants';
 import * as historyService from '../services/historyService';
+import * as employeeService from '../services/employeeService';
+import { logAudit } from '../services/auditService';
 
 // MAX_ROWS vẫn cần để tính pageCount khi lưu lịch sử.
 
@@ -14,6 +16,7 @@ import * as historyService from '../services/historyService';
 export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'default', departmentName = '' } = {}) {
 
   const [employees, setEmployees] = useState(initialEmployeeList);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [activeTab, setActiveTab] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,7 +25,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const [otShift, setOtShift] = useState('day'); // 'day' | 'night'
   const [otTimes, setOtTimes] = useState({});
   const [notes, setNotes] = useState({});
-  const [otHistory, setOtHistory] = useState(() => historyService.getHistory(departmentId));
+  const [otHistory, setOtHistory] = useState([]);
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,6 +46,44 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const closeSnackbar = useCallback(() => {
     setSnackbar(prev => ({ ...prev, open: false }));
   }, []);
+
+  const refreshHistory = useCallback(async () => {
+    const history = await historyService.getHistory(departmentId);
+    setOtHistory(history);
+  }, [departmentId]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function bootstrapDepartmentData() {
+      setEmployeesLoading(true);
+      try {
+        const remoteEmployees = await employeeService.loadEmployeesForDepartment(
+          departmentId,
+          initialEmployeeList,
+        );
+        if (!cancelled) {
+          setEmployees(remoteEmployees ?? initialEmployeeList);
+        }
+        await refreshHistory();
+      } catch (error) {
+        console.error('Lỗi tải dữ liệu bộ phận:', error);
+        if (!cancelled) {
+          setEmployees(initialEmployeeList);
+          showToast('Không tải được dữ liệu cloud, dùng dữ liệu cục bộ', 'warning');
+        }
+      } finally {
+        if (!cancelled) {
+          setEmployeesLoading(false);
+        }
+      }
+    }
+
+    bootstrapDepartmentData();
+    return () => {
+      cancelled = true;
+    };
+  }, [departmentId, initialEmployeeList, refreshHistory, showToast]);
 
   // Derived
   const filteredEmployees = useMemo(() => {
@@ -174,7 +215,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     setConfirmOpen(true);
   }, []);
 
-  const confirmDelete = useCallback(() => {
+  const confirmDelete = useCallback(async () => {
     if (!deletingId) return;
     setEmployees(prev => prev.filter(e => e.id !== deletingId));
     setSelectedIds(prev => {
@@ -182,10 +223,26 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
       next.delete(deletingId);
       return next;
     });
-    showToast('Đã xóa nhân viên');
+    try {
+      const targetEmp = employees.find(e => e.id === deletingId);
+      await employeeService.removeEmployee(departmentId, deletingId);
+      showToast('Đã xóa nhân viên');
+      logAudit({
+        action: 'DELETE',
+        entity: 'employee',
+        entityId: deletingId,
+        entityLabel: targetEmp?.name || deletingId,
+        department: departmentId,
+        before: targetEmp || null,
+        note: `Xoá nhân viên ${targetEmp?.name || deletingId} khỏi bộ phận ${departmentName || departmentId}`,
+      });
+    } catch (error) {
+      console.error('Lỗi xóa nhân viên trên Firebase:', error);
+      showToast('Đã xóa trên màn hình nhưng chưa đồng bộ cloud', 'warning');
+    }
     setConfirmOpen(false);
     setDeletingId(null);
-  }, [deletingId, showToast]);
+  }, [deletingId, departmentId, employees, departmentName, showToast]);
 
   const cancelDelete = useCallback(() => {
     setConfirmOpen(false);
@@ -209,7 +266,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
 
   const closeModal = useCallback(() => setModalOpen(false), []);
 
-  const saveEmp = useCallback(() => {
+  const saveEmp = useCallback(async () => {
     const { id, name, role } = modalData;
     const trimId = id.trim();
     const trimName = name.trim();
@@ -222,15 +279,33 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
         showToast('Mã NV đã tồn tại', 'error');
         return;
       }
-      setEmployees(prev => [...prev, { id: trimId, name: trimName, role }]);
+      const newEmployee = { id: trimId, name: trimName, role };
+      setEmployees(prev => [...prev, newEmployee]);
+      try {
+        await employeeService.upsertEmployee(departmentId, newEmployee);
+      } catch (error) {
+        console.error('Lỗi lưu nhân viên Firebase:', error);
+        showToast('Đã thêm cục bộ nhưng chưa đồng bộ cloud', 'warning');
+      }
       showToast('Đã thêm nhân viên');
+      logAudit({
+        action: 'ADD',
+        entity: 'employee',
+        entityId: trimId,
+        entityLabel: trimName,
+        department: departmentId,
+        after: newEmployee,
+        note: `Thêm nhân viên ${trimName} (${role}) vào bộ phận ${departmentName || departmentId}`,
+      });
     } else {
       if (trimId !== editingId && employees.find(e => e.id === trimId)) {
         showToast('Mã NV đã tồn tại', 'error');
         return;
       }
+      const oldEmp = employees.find(e => e.id === editingId);
+      const updatedEmployee = { id: trimId, name: trimName, role };
       setEmployees(prev =>
-        prev.map(e => e.id === editingId ? { ...e, id: trimId, name: trimName, role } : e)
+        prev.map(e => e.id === editingId ? { ...e, ...updatedEmployee } : e)
       );
       if (trimId !== editingId && selectedIds.has(editingId)) {
         setSelectedIds(prev => {
@@ -239,17 +314,34 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
           next.add(trimId);
           return next;
         });
+        try {
+          await employeeService.removeEmployee(departmentId, editingId);
+        } catch (error) {
+          console.error('Lỗi xóa mã NV cũ trên Firebase:', error);
+        }
+      }
+      try {
+        await employeeService.upsertEmployee(departmentId, updatedEmployee);
+      } catch (error) {
+        console.error('Lỗi cập nhật nhân viên Firebase:', error);
+        showToast('Đã cập nhật cục bộ nhưng chưa đồng bộ cloud', 'warning');
       }
       showToast('Đã cập nhật');
+      logAudit({
+        action: 'EDIT',
+        entity: 'employee',
+        entityId: trimId,
+        entityLabel: trimName,
+        department: departmentId,
+        before: oldEmp || null,
+        after: updatedEmployee,
+        note: `Cập nhật thông tin nhân viên ${trimName} (${role})`,
+      });
     }
     closeModal();
-  }, [modalData, editingId, employees, showToast, closeModal]);
+  }, [modalData, editingId, employees, departmentId, selectedIds, showToast, closeModal]);
 
-  const refreshHistory = useCallback(() => {
-    setOtHistory(historyService.getHistory(departmentId));
-  }, [departmentId]);
-
-  const doPrint = useCallback(() => {
+  const doPrint = useCallback(async () => {
     if (selectedIds.size === 0) {
       showToast('Vui lòng chọn ít nhất 1 nhân viên', 'warning');
       return;
@@ -271,11 +363,29 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
       version: 1,
     };
 
-    historyService.saveHistory(snapshotData);
-    refreshHistory();
+    const saved = await historyService.saveHistory(snapshotData);
+    if (!saved) {
+      showToast('Không lưu được lịch sử in', 'error');
+      return;
+    }
+    await refreshHistory();
+
+    logAudit({
+      action: 'PRINT',
+      entity: 'overtime',
+      entityId: snapshotData.id,
+      entityLabel: `${departmentName || departmentId} - Ngày ${otDate} (${otType})`,
+      department: departmentId,
+      after: {
+        id: snapshotData.id,
+        date: otDate,
+        shift: otType,
+        count: selectedIds.size,
+      },
+      note: `In biểu tăng ca ${departmentName || departmentId} (${selectedIds.size} người)`,
+    });
 
     // 2. Gọi lệnh in
-    // Cần 1 khoảng delay nhỏ để DOM render lại nhãn lịch sử nếu cần thiết
     setTimeout(() => {
       window.print();
     }, 100);
@@ -300,23 +410,33 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     showToast('Bản ghi lịch sử ở chế độ chỉ đọc (Read-only)', 'info');
   }, [showToast]);
 
-  const deleteHistoryRecord = useCallback((id) => {
-    if (historyService.deleteHistory(id)) {
-      refreshHistory();
+  const deleteHistoryRecord = useCallback(async (id) => {
+    const ok = await historyService.deleteHistory(id, departmentId);
+    if (ok) {
+      await refreshHistory();
       showToast('Đã xóa biểu khỏi lịch sử');
+      logAudit({
+        action: 'DELETE',
+        entity: 'history',
+        entityId: id,
+        entityLabel: `Biểu tăng ca #${id}`,
+        department: departmentId,
+        note: `Xoá biểu lịch sử #${id}`,
+      });
     }
-  }, [refreshHistory, showToast]);
+  }, [departmentId, refreshHistory, showToast]);
 
-  const clearAllHistory = useCallback(() => {
-    if (historyService.clearHistory(departmentId)) {
-      refreshHistory();
+  const clearAllHistory = useCallback(async () => {
+    const ok = await historyService.clearHistory(departmentId);
+    if (ok) {
+      await refreshHistory();
       showToast('Đã xóa toàn bộ lịch sử bộ phận');
     }
   }, [departmentId, refreshHistory, showToast]);
 
   return {
     // state
-    employees, selectedIds, activeTab, setActiveTab,
+    employees, employeesLoading, selectedIds, activeTab, setActiveTab,
     searchQuery, setSearchQuery,
     otDate, setOtDate, otType, setOtType,
     otShift, setOtShift: handleShiftChange,
