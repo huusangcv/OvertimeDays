@@ -22,7 +22,7 @@ const ROLE_OPTIONS = [
   { value: 'CN', label: 'CN – Công nhân' },
   { value: 'NV', label: 'NV – Nhân viên' },
   { value: 'CT', label: 'CT – Ca trưởng' },
-  { value: 'TP', label: 'TT – Tổ phó' },
+  { value: 'TP', label: 'TP – Tổ phó' },
   { value: 'TT', label: 'TT – Tổ trưởng' },
   { value: 'PK', label: 'PK - Phó Khoa' },
   { value: 'KT', label: 'KT - Khoa Trưởng' },
