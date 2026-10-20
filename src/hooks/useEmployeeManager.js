@@ -15,6 +15,7 @@ import { logAudit } from '../services/auditService';
  */
 export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'default', departmentName = '' } = {}) {
 
+
   const [employees, setEmployees] = useState(initialEmployeeList);
   const [employeesLoading, setEmployeesLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -86,9 +87,17 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   }, [departmentId, initialEmployeeList, refreshHistory, showToast]);
 
   // Derived
+  const POSITION_RANK = { KT: 1, PK: 2, TT: 3, TP: 4, CT: 5, NV: 6, CN: 7 };
   const filteredEmployees = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    return employees.filter(e => e.name.toLowerCase().includes(q) || e.id.includes(q));
+    return employees
+      .filter(e => e.name.toLowerCase().includes(q) || e.id.includes(q))
+      .sort((a, b) => {
+        const ra = POSITION_RANK[a.role] ?? 8;
+        const rb = POSITION_RANK[b.role] ?? 8;
+        if (ra !== rb) return ra - rb;
+        return a.name.localeCompare(b.name, 'vi');
+      });
   }, [searchQuery, employees]);
 
   const isSun = otType === 'CHỦ NHẬT';
@@ -443,7 +452,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
     otTimes, setEmployeeTime, notes, setNote, otHistory, loadHistory, deleteHistoryRecord, clearAllHistory,
     modalOpen, editingId, modalData, setModalData,
     confirmOpen, deletingId,
-    snackbar, closeSnackbar,
+    snackbar, closeSnackbar, showToast,
     // derived
     filteredEmployees, isSun, getDateStr, deptName, selArr,
     // handlers
