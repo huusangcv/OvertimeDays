@@ -113,7 +113,7 @@ export function useEmployeeManager({ initialEmployeeList = [], departmentId = 'd
   const deptName = departmentId;
 
   // Sort priorities for roles
-  const ROLE_PRIORITY = { TT: 1, CT: 2, NV: 3, CN: 4 };
+  const ROLE_PRIORITY = { KT: 1, PK: 2, TT: 3, TP: 4, CT: 5, NV: 6, CN: 7 };
 
   const selArr = useMemo(() => {
     const selected = employees.filter(e => selectedIds.has(e.id));
